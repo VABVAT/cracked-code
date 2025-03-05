@@ -1,0 +1,40 @@
+{
+  "name": "cracked-code",
+  "private": true,
+  "version": "0.0.0",
+  "description": "only for EDUCATIONAL purposes",
+  "author": "alo",
+  "type": "module",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev:react": "vite",
+    "dev:electron": "cross-env NODE_ENV=development electron .",
+    "build": "tsc -b tsconfig.app.json && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "build:electron": "tsc --project src/electron/tsconfig.json",
+    "dist:mac": "npm run build:electron && npm run build && electron-builder --mac --arm64",
+    "dist:win": "npm run build:electron && npm run build && electron-builder --win --x64",
+    "dist:linux": "npm run build:electron && npm run build && electron-builder --linux --x64"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "cross-env": "^7.0.3",
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.24.1",
+    "vite": "^6.2.0"
+  }
+}
