@@ -3,8 +3,8 @@
     "files": ["dist-electron", "dist-react"],
     "icon": "./desktop.png",
     "extraResources": [
-        "dist-electron/whisper_transcribe.py"
-        ,
+        "dist-electron/server.js",
+        "dist-electron/listener.js",
         "dist-electron/preload.cjs"],
     "mac" : {
         "target": "dmg"

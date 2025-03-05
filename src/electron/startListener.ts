@@ -1,34 +1,33 @@
 import { spawn } from "child_process";
-import { BrowserWindow } from "electron";
-import { app } from "electron";
-import path from "path";
-import { isDev } from "./util.js";
+import express from "express";
+import { live } from "./api_voice/deepgram.js";
 
-const scriptPath = !isDev()
-  ? path.join(app.getAppPath(), '..', "/dist-electron/whisper_transcribe.py") // Production
-  : path.join(app.getAppPath() ,"src/electron/whisper_transcribe.py"); // Development
 
-export function startTranscription(mainWindow: BrowserWindow) {
+export function startTranscription(){
+    const app2 = express();
+    const PORT = 3001;
+ 
+    app2.get("/audio", (_, res:any) => {
+    res.setHeader("Content-Type", "audio/wav"); 
 
-    const pythonCmd = process.platform === "win32" ? "python" : "python3";
-    const whisperProcess = spawn(pythonCmd, [scriptPath]);
-    
+    const ffmpeg = spawn("ffmpeg", [
+        "-f", "dshow", 
+        "-i", "audio=Stereo Mix (Realtek(R) Audio)", 
+        "-ac", "1", 
+        "-ar", "16000", 
+        "-f", "wav", 
+        "-"
+    ]);
 
-    whisperProcess.stdout.on('data', (data) => {
-        const text = data.toString().trim();
-        mainWindow.webContents.send("sys-audio", {"text": text})
+    ffmpeg.stdout.pipe(res);
+
+    ffmpeg.on("close", () => console.log("FFmpeg process closed"));
     });
 
-    whisperProcess.stderr.on('data', (data) => {
-        console.error(`Error: ${data}`);
-    });
+    app2.listen(PORT, () => console.log(`Streaming at http://localhost:${PORT}/audio`));
 
-    whisperProcess.on('close', (code) => {
-        console.log(`Whisper process exited with code ${code}`);
-        // Restart on failure
-        if (code !== 0) {
-            console.log("Restarting Whisper process...");
-            setTimeout(startTranscription, 2000);
-        }
-    });
+    // fireUp the model
+    live()
 }
+
+

@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from 'path'
 import { isDev } from "./util.js";
 import { getPreloadPath } from "./pathResolver.js";
@@ -19,5 +19,14 @@ app.on("ready" , () => {
         mainWindow.loadFile(path.join(app.getAppPath() , '/dist-react/index.html'))
     }
     mainWindow.setContentProtection(true)
-    startTranscription(mainWindow)
+    ipcMain.handle('startServer', async () => {
+        // whatever is returned here goes to app.tsx 
+    try{
+        startTranscription()
+        return "server started"
+    }catch{
+        return "error starting the server please see the documentation --docs"
+    }
+    })
+    
 })
