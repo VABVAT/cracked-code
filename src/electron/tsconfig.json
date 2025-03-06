@@ -2,11 +2,12 @@
     "compilerOptions": {
         "strict": true,
         "target": "ESNext",
-        "module": "NodeNext",
+        "module": "CommonJS",
         "outDir": "../../dist-electron",
         "skipLibCheck": true,
         "declaration": true,
         "declarationDir": "../../dist-types"
 
-    }
+    },
+ "exclude": ["./preload.d.cts"] 
 }

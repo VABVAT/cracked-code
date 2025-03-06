@@ -1,8 +1,9 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import path from 'path'
-import { isDev } from "./util.js";
-import { getPreloadPath } from "./pathResolver.js";
-import { startTranscription } from "./startListener.js";
+const { app, BrowserWindow, ipcMain } = require("electron");
+const path = require("path");
+const { isDev } = require("./util.js");
+const { getPreloadPath } = require("./pathResolver.js");
+const { startTranscription } = require("./startListener.js");
+
 
 app.on("ready" , () => {
     const mainWindow = new BrowserWindow({
@@ -22,11 +23,16 @@ app.on("ready" , () => {
     ipcMain.handle('startServer', async () => {
         // whatever is returned here goes to app.tsx 
     try{
-        startTranscription()
+        startTranscription(mainWindow)
         return "server started"
     }catch{
         return "error starting the server please see the documentation --docs"
     }
     })
+
+    // ipcMain.on('transcription-arrived', (_, data:string) => {
+
+    // })
+    // ipcMain.on()
     
 })

@@ -1,6 +1,7 @@
-import path from 'path'
-import { isDev } from "./util.js";
-import { app } from 'electron';
+const path = require("path");
+const { isDev } = require("./util.js");
+const { app } = require("electron");
+
 
 export function getPreloadPath(){
     return path.join(app.getAppPath(),

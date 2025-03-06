@@ -1,13 +1,15 @@
-import { spawn } from "child_process";
-import express from "express";
-import { live } from "./api_voice/deepgram.js";
+const { spawn } = require("child_process");
+const express = require("express");
+const { live } = require("./deepgram.js");
+// const { BrowserWindow } = require("electron");
 
 
-export function startTranscription(){
+
+export function startTranscription(mainWindow: any){
     const app2 = express();
     const PORT = 3001;
  
-    app2.get("/audio", (_, res:any) => {
+    app2.get("/audio", (_:any, res:any) => {
     res.setHeader("Content-Type", "audio/wav"); 
 
     const ffmpeg = spawn("ffmpeg", [
@@ -27,7 +29,5 @@ export function startTranscription(){
     app2.listen(PORT, () => console.log(`Streaming at http://localhost:${PORT}/audio`));
 
     // fireUp the model
-    live()
+    live(mainWindow)
 }
-
-

@@ -1,11 +1,15 @@
 {
     "appId":"com.payBig.fuckDsa",
-    "files": ["dist-electron", "dist-react"],
+    "files": [    "dist-electron/**/*",
+    "dist-react/**/*",
+    "node_modules/**/*"
+],
     "icon": "./desktop.png",
     "extraResources": [
-        "dist-electron/server.js",
-        "dist-electron/listener.js",
-        "dist-electron/preload.cjs"],
+        "dist-electron/preload.cjs",
+        "dist-electron/.env"
+    ],
+        
     "mac" : {
         "target": "dmg"
     },

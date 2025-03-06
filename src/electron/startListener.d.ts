@@ -1,1 +1,1 @@
-export declare function startTranscription(): void;
+export declare function startTranscription(mainWindow: any): void;
