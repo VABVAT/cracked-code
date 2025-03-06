@@ -13,7 +13,8 @@ electron.contextBridge.exposeInMainWorld("electron",{
     transcription: (callback:(data: any) => void) => ipcRenderer.on('transcription-arrived', (_:any , data:any) => callback(data)),
     // returns promise to frontend
     startServer: () => ipcRenderer.invoke('startServer'),
-    airesponse: (prompt:string) => ipcRenderer.invoke('getCode', prompt)
+    airesponse: (prompt:string) => ipcRenderer.invoke('getCode', prompt),
+    sendImageWithPrompt:(prompt:string) => ipcRenderer.invoke('getAdvCode', prompt)
     // onFfmpegNotFound: (callback: (error: string) => void) => 
     //     ipcRenderer.on('ffmpeg-not-found', (_: any, data: any) => callback(data.error)),
     //   onFfmpegFound: (callback: () => void) => 

@@ -32,6 +32,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "express": "^4.21.2",
     "globals": "^15.15.0",
+    "os": "^0.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-syntax-highlighter": "^15.6.1",

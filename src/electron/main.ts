@@ -1,3 +1,4 @@
+const { advCode } = require("./advCode.js")
 const { getCode }  = require("./getcode.js");
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
@@ -5,7 +6,7 @@ const { isDev } = require("./util.js");
 const { getPreloadPath } = require("./pathResolver.js");
 const { startTranscription } = require("./startListener.js");
 const {exec} = require("child_process")
-
+const {captureScreen} = require("./screen-capture/captureScreen.js")
 app.on("ready" , () => {
     const mainWindow = new BrowserWindow({
         width:800,
@@ -34,7 +35,12 @@ app.on("ready" , () => {
           console.log(`FFmpeg is installed`);
         }
       });
-
+    
+    ipcMain.handle('getAdvCode', async (_:Event, prompt:string) => {
+        const screenShot = await captureScreen();
+        const response = await advCode(prompt, screenShot)
+        return response
+    })
     ipcMain.handle('startServer', async () => {
         // whatever is returned here goes to app.tsx 
     try{

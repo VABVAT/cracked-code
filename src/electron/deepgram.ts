@@ -41,6 +41,7 @@ export const live = async (mainWindow:any) => {
 
   connection.on(LiveTranscriptionEvents.Error, (err:any) => {
     console.error("⚠️ Deepgram Error:", err);
+    live(mainWindow)
   });
 };
 

@@ -19,6 +19,11 @@ function App() {
     );
   }
 
+  async function sendAdvanced() {
+    //@ts-ignore
+      window.electron.sendImageWithPrompt(transcription).then((resp:string) => setResponse(resp))
+  }
+
   async function sendToAi() {
     //@ts-ignore
     window.electron.airesponse(transcription).then((resp: string) => setResponse(resp));
@@ -41,6 +46,8 @@ function App() {
         <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
           Restart Server
         </button>
+        <button onClick={sendAdvanced} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Send screenshot with prompt</button>
+        <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send screenshot</button>
       </div>
 
       <div className="mt-6 p-4 w-full max-w-2xl bg-white shadow-md rounded-lg">
