@@ -7,9 +7,11 @@ electron.contextBridge.exposeInMainWorld("electron",{
     // we have defined the sendText here only
     // whenever send text recieves event sys-audio it calls the callback given to function in client side
     // client can only call these functions
+    //! passing functions from front-end to back-end
     sendText: (callback: (data:string) => void) => ipcRenderer.on('sys-audio', (_:any, data:any) => callback(data)),
  
     transcription: (callback:(data: any) => void) => ipcRenderer.on('transcription-arrived', (_:any , data:any) => callback(data)),
     // returns promise to frontend
-    startServer: () => ipcRenderer.invoke('startServer')
+    startServer: () => ipcRenderer.invoke('startServer'),
+    airesponse: (prompt:string) => ipcRenderer.invoke('getCode', prompt)
 })

@@ -1,3 +1,4 @@
+const { getCode }  = require("./getcode.js");
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const { isDev } = require("./util.js");
@@ -33,6 +34,9 @@ app.on("ready" , () => {
     // ipcMain.on('transcription-arrived', (_, data:string) => {
 
     // })
-    // ipcMain.on()
+    ipcMain.handle('getCode', async (_:Event, prompt:string) => {
+        const response = await getCode(prompt)  
+        return response;
+    })
     
 })
