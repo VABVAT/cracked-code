@@ -14,4 +14,15 @@ electron.contextBridge.exposeInMainWorld("electron",{
     // returns promise to frontend
     startServer: () => ipcRenderer.invoke('startServer'),
     airesponse: (prompt:string) => ipcRenderer.invoke('getCode', prompt)
+    // onFfmpegNotFound: (callback: (error: string) => void) => 
+    //     ipcRenderer.on('ffmpeg-not-found', (_: any, data: any) => callback(data.error)),
+    //   onFfmpegFound: (callback: () => void) => 
+    //     ipcRenderer.on('ffmpeg-found', () => callback()),
+        
+    //   checkFfmpeg: () => ipcRenderer.send('check-ffmpeg'),
+      
+    //   removeAllListeners: () => {
+    //     ipcRenderer.removeAllListeners('ffmpeg-not-found');
+    //     ipcRenderer.removeAllListeners('ffmpeg-found');    
+//}
 })

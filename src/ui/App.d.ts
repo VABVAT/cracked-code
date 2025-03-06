@@ -1,3 +1,4 @@
-import './App.css';
+import "./App.css";
+import './index.css';
 declare function App(): import("react/jsx-runtime").JSX.Element;
 export default App;

@@ -4,7 +4,7 @@ const path = require("path");
 const { isDev } = require("./util.js");
 const { getPreloadPath } = require("./pathResolver.js");
 const { startTranscription } = require("./startListener.js");
-
+const {exec} = require("child_process")
 
 app.on("ready" , () => {
     const mainWindow = new BrowserWindow({
@@ -15,12 +15,26 @@ app.on("ready" , () => {
             preload: getPreloadPath()
         }
     })
+
+
     if(isDev()){
         mainWindow.loadURL("http://localhost:3000")    
     }else{
         mainWindow.loadFile(path.join(app.getAppPath() , '/dist-react/index.html'))
     }
     mainWindow.setContentProtection(true)
+
+    exec('ffmpeg -version', (error:any) => {
+        if (error) {
+          console.log(`FFmpeg is not installed`);
+          // Send a message to the renderer process (React) with instructions to install FFmpeg
+        //   mainWindow.webContents.send('ffmpeg-not-found', {error: "ffmpeg not found"});
+        } else {
+        // mainWindow.webContents.send("ffmpeg-found", {error: "found"})
+          console.log(`FFmpeg is installed`);
+        }
+      });
+
     ipcMain.handle('startServer', async () => {
         // whatever is returned here goes to app.tsx 
     try{
