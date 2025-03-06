@@ -1,6 +1,6 @@
 const { screen, desktopCapturer } = require("electron");
-const fs = require("fs");
-const path = require("path");
+// const fs = require("fs");
+// const path = require("path");
 
 // Function to capture the screen and return a hosted URL
 export async function captureScreen() {
