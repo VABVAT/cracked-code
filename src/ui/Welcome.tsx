@@ -38,7 +38,7 @@ export default function Welcome(){
         
     }, [])
     
-    return (<div className="w-screen h-screen flex flex-col justify-center items-center">
+    return (<div className="w-screen h-screen flex flex-col bg-white justify-center items-center">
         <div className="p-4 "> <b> ENTER KEY</b></div>
         
         <input ref={keyVal} className="border-2 border-black text-center w-[50%] px-2 py-2" type="text" placeholder="XXXX-XXXX-XXXX" />

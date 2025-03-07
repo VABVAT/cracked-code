@@ -1,6 +1,6 @@
 const { advCode } = require("./advCode.js")
 const { getCode }  = require("./getcode.js");
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
 const path = require("path");
 const { isDev } = require("./util.js");
 const { getPreloadPath } = require("./pathResolver.js");
@@ -17,8 +17,9 @@ app.on("ready" , () => {
         alwaysOnTop: true, // Keeps window on top
         fullscreenable: false, // Prevents it from going fullscreen
         resizable: false, // Prevents accidental resizing
-        skipTaskbar: false, // Keeps it in taskbar
-        focusable: true, // Allows user interaction
+        skipTaskbar: true, // Keeps it in taskbar
+        focusable: true,
+        transparent: true, // Allows user interaction
         webPreferences: {
             preload: getPreloadPath()
         }
@@ -40,7 +41,32 @@ app.on("ready" , () => {
             exists = true
         }
       });
+
+      globalShortcut.register("Control+Shift+Q", () => {
+        if (mainWindow) {
+          if (mainWindow.isMinimized()) {
+            mainWindow.restore();
+          }
+          mainWindow.show();
+          mainWindow.focus();
+          mainWindow.setAlwaysOnTop(true, 'screen-saver')
+        }
+      });
     
+    globalShortcut.register("Control+Shift+M", () => {
+        if (mainWindow) {
+            mainWindow.minimize(); // Minimize the window
+        }
+    });
+      
+      app.on("will-quit", () => {
+        globalShortcut.unregisterAll(); // Unregister shortcuts on quit
+      });
+    
+      app.on("will-quit", () => {
+        globalShortcut.unregisterAll(); // Unregister shortcuts
+        if (mainWindow) mainWindow.destroy();
+      });
     ipcMain.on('ffmpeg', (_:Event) => {
         //@ts-ignore
         _.sender.send('ff-status', exists)

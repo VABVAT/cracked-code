@@ -3,6 +3,7 @@ import "./App.css";
 import {formatResponse} from "./formatting/format.tsx"
 import './index.css';
 import { useNavigate } from "react-router-dom";
+import {useHotkeys} from 'react-hotkeys-hook'
 
 function App() {
   const [text, setText] = useState("");
@@ -10,8 +11,13 @@ function App() {
   const [response, setResponse] = useState<string | null>(null);
   const navigate = useNavigate()
 // In your React component
-  
 
+useHotkeys("ctrl+s, ctrl+q, ctrl+w", (event) => {
+  if (event.ctrlKey && event.key === "s") startListening();
+  if (event.ctrlKey && event.key === "q") sendToAi();
+  if(event.ctrlKey && event.key === "w") sendAdvanced();
+  if(event.ctrlKey && event.key === "p") reset();
+}, { preventDefault: true });
 
   async function startListening() {
     //@ts-ignore
