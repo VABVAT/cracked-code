@@ -2,13 +2,16 @@ import { useState } from "react";
 import "./App.css";
 import {formatResponse} from "./formatting/format.tsx"
 import './index.css';
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const [text, setText] = useState("");
   const [transcription, setTranscription] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
-
+  const navigate = useNavigate()
 // In your React component
+  
+
 
   async function startListening() {
     //@ts-ignore
@@ -22,13 +25,19 @@ function App() {
   async function sendAdvanced() {
     //@ts-ignore
       window.electron.sendImageWithPrompt(transcription).then((resp:string) => setResponse(resp))
+      setResponse(null)
   }
 
   async function sendToAi() {
     //@ts-ignore
     window.electron.airesponse(transcription).then((resp: string) => setResponse(resp));
+    setResponse(null)
   }
   
+  function reset(){
+    setTranscription("")
+    
+  }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold mb-4">AI Assistant</h1>
@@ -37,14 +46,14 @@ function App() {
         <button onClick={startListening} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
           Start Server
         </button>
-        <button onClick={() => setTranscription("")} className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500">
+        <button onClick={reset} className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500">
           Reset
         </button>
         <button onClick={sendToAi} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
           Send to AI
         </button>
-        <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-          Restart Server
+        <button onClick={() => navigate('/')} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+         Log out
         </button>
         <button onClick={sendAdvanced} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Send screenshot with prompt</button>
         <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send screenshot</button>

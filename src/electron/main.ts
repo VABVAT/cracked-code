@@ -7,12 +7,19 @@ const { getPreloadPath } = require("./pathResolver.js");
 const { startTranscription } = require("./startListener.js");
 const {exec} = require("child_process")
 const {captureScreen} = require("./screen-capture/captureScreen.js")
+const {machineIdSync} = require('node-machine-id')
+
+var exists = false;
 app.on("ready" , () => {
     const mainWindow = new BrowserWindow({
-        width:800,
-        height:800,
-        alwaysOnTop:true,
-        webPreferences:{
+        width: 800,
+        height: 800,
+        alwaysOnTop: true, // Keeps window on top
+        fullscreenable: false, // Prevents it from going fullscreen
+        resizable: false, // Prevents accidental resizing
+        skipTaskbar: false, // Keeps it in taskbar
+        focusable: true, // Allows user interaction
+        webPreferences: {
             preload: getPreloadPath()
         }
     })
@@ -24,18 +31,21 @@ app.on("ready" , () => {
         mainWindow.loadFile(path.join(app.getAppPath() , '/dist-react/index.html'))
     }
     mainWindow.setContentProtection(true)
+    mainWindow.setAlwaysOnTop(true, "screen-saver");
 
     exec('ffmpeg -version', (error:any) => {
         if (error) {
-          console.log(`FFmpeg is not installed`);
-          // Send a message to the renderer process (React) with instructions to install FFmpeg
-        //   mainWindow.webContents.send('ffmpeg-not-found', {error: "ffmpeg not found"});
+            exists = false
         } else {
-        // mainWindow.webContents.send("ffmpeg-found", {error: "found"})
-          console.log(`FFmpeg is installed`);
+            exists = true
         }
       });
     
+    ipcMain.on('ffmpeg', (_:Event) => {
+        //@ts-ignore
+        _.sender.send('ff-status', exists)
+    })
+
     ipcMain.handle('getAdvCode', async (_:Event, prompt:string) => {
         const screenShot = await captureScreen();
         const response = await advCode(prompt, screenShot)
@@ -54,6 +64,10 @@ app.on("ready" , () => {
     // ipcMain.on('transcription-arrived', (_, data:string) => {
 
     // })
+    ipcMain.handle('need-key', async () => {
+        const id = machineIdSync();
+        return id;
+    })
     ipcMain.handle('getCode', async (_:Event, prompt:string) => {
         const response = await getCode(prompt)  
         return response;
