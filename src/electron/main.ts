@@ -9,6 +9,7 @@ const {exec} = require("child_process")
 const {captureScreen} = require("./screen-capture/captureScreen.js")
 const {machineIdSync} = require('node-machine-id')
 
+
 var exists = false;
 app.on("ready" , () => {
     const mainWindow = new BrowserWindow({
@@ -25,7 +26,13 @@ app.on("ready" , () => {
         }
     })
 
-
+    function moveWindow(xOffset:any, yOffset:any) {
+        if (!mainWindow) return;
+    
+        let {x, y} = mainWindow.getBounds();
+        mainWindow.setBounds({ x: x + xOffset, y: y + yOffset, width: 800, height: 800 });
+    }
+    
     if(isDev()){
         mainWindow.loadURL("http://localhost:3000")    
     }else{
@@ -41,6 +48,10 @@ app.on("ready" , () => {
             exists = true
         }
       });
+      globalShortcut.register("Up", () => moveWindow(0, -40));
+globalShortcut.register("Down", () => moveWindow(0, 40));
+globalShortcut.register("Left", () => moveWindow(-40, 0));
+globalShortcut.register("Right", () => moveWindow(40, 0));
 
       globalShortcut.register("Control+Shift+Q", () => {
         if (mainWindow) {
@@ -53,6 +64,9 @@ app.on("ready" , () => {
         }
       });
     
+      
+
+
     globalShortcut.register("Control+Shift+M", () => {
         if (mainWindow) {
             mainWindow.minimize(); // Minimize the window
