@@ -17,5 +17,12 @@ electron.contextBridge.exposeInMainWorld("electron",{
     sendImageWithPrompt:(prompt:string) => ipcRenderer.invoke('getAdvCode', prompt),
     hardwareId:() => ipcRenderer.invoke('need-key'),
     ffmpegStatus: () => ipcRenderer.send('ffmpeg'),
-    ffRecieve: (callback:(data:boolean) => void) => ipcRenderer.on('ff-status', (_:Event, data:boolean) => callback(data))
+    ffRecieve: (callback:(data:boolean) => void) => ipcRenderer.on('ff-status', (_:Event, data:boolean) => callback(data)),
+    listenerFocus: (callback:() => void) => ipcRenderer.on("focus-input", (_:Event) => callback()),
+    sendSS: (callback:() => void) => ipcRenderer.on('send-screenshot', (_:Event) => callback()),
+    vc: (callback:() => void) => ipcRenderer.on('start-server', (_:Event) => callback() ),
+    sai: (callback:() => void) => ipcRenderer.on('sai', (_:Event) => callback()),
+    rr: (callback:() => void) => ipcRenderer.on('rr', (_:Event) => callback()),
+    onScrollDown: (callback: () => void) => ipcRenderer.on("scroll-down", callback),
+    onScrollUp: (callback: () => void) => ipcRenderer.on("scroll-up", callback)
 })

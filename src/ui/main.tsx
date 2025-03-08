@@ -8,8 +8,8 @@ import Welcome from './Welcome.tsx'
 createRoot(document.getElementById('root')!).render(
   <HashRouter>
     <Routes>
-      <Route path='/main-page'  element={<App />  }/>
-      <Route path='/'  element={<Welcome />  }/>
+      <Route path='/'  element={<App />  }/>
+      <Route path='/s'  element={<Welcome />  }/>
   </Routes>
   </HashRouter>
 )

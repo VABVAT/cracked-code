@@ -1,23 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
-import {formatResponse} from "./formatting/format.tsx"
+import Formate from "./formatting/Formate.tsx"
 import './index.css';
-import { useNavigate } from "react-router-dom";
-import {useHotkeys} from 'react-hotkeys-hook'
+// import { useNavigate } from "react-router-dom";
+// import {useHotkeys} from 'react-hotkeys-hook'
 
 function App() {
   const [text, setText] = useState("");
   const [transcription, setTranscription] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
-  const navigate = useNavigate()
+  const responseContainerRef = useRef<HTMLDivElement>(null);
+  // const navigate = useNavigate()
 // In your React component
-
-useHotkeys("ctrl+s, ctrl+q, ctrl+w", (event) => {
-  if (event.ctrlKey && event.key === "s") startListening();
-  if (event.ctrlKey && event.key === "q") sendToAi();
-  if(event.ctrlKey && event.key === "w") sendAdvanced();
-  if(event.ctrlKey && event.key === "p") reset();
-}, { preventDefault: true });
+  // text -> server-response, transcription -> transcrption, repsonse -> reposnse 
+  useEffect(() => {
+    // window.electron.scroll()
+    //@ts-ignore    
+    window.electron.onScrollDown(() => {
+      if (responseContainerRef.current) {
+        responseContainerRef.current.scrollBy({ top: 100, behavior: "smooth" });
+      }
+    });
+    //@ts-ignore
+    window.electron.onScrollUp(() => {
+      if (responseContainerRef.current) {
+        responseContainerRef.current.scrollBy({ top: -100, behavior: "smooth" });
+      }
+    });
+    //@ts-ignore
+    window.electron.rr(() => {
+      reset()
+      setText("server is still running")
+    })
+    //@ts-ignore
+    window.electron.sendSS(() => sendAdvanced());
+    //@ts-ignore
+    window.electron.vc(() => startListening())
+    //@ts-ignore
+    window.electron.sai(() =>sendToAi())
+  }, [])
 
   async function startListening() {
     //@ts-ignore
@@ -45,49 +66,24 @@ useHotkeys("ctrl+s, ctrl+q, ctrl+w", (event) => {
     
   }
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-4">AI Assistant</h1>
-      
-      <div className="flex gap-4">
-        <button onClick={startListening} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-          Start Server
-        </button>
-        <button onClick={reset} className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500">
-          Reset
-        </button>
-        <button onClick={sendToAi} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
-          Send to AI
-        </button>
-        <button onClick={() => navigate('/')} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-         Log out
-        </button>
-        <button onClick={sendAdvanced} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Send screenshot with prompt</button>
-        <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send screenshot</button>
-      </div>
-
-      <div className="mt-6 p-4 w-full max-w-2xl bg-white shadow-md rounded-lg">
-        <h2 className="text-lg font-semibold">Server Response:</h2>
-        {text === "" ? (
-          <p className="text-gray-500">Loading...</p>
-        ) : (
-          <p className="text-gray-800">{text}</p>
-        )}
-      </div>
-
-      <div className="mt-4 p-4 w-full max-w-2xl bg-white shadow-md rounded-lg">
-        <h2 className="text-lg font-semibold">Transcription:</h2>
-        {transcription ? (
-          <p className="text-gray-800">{transcription}</p>
-        ) : (
-          <p className="text-gray-500">Waiting for transcription...</p>
-        )}
-      </div>
-
-      <div className="mt-4 p-4 w-full max-w-2xl bg-white shadow-md rounded-lg">
-        <h2 className="text-lg font-semibold">AI Response:</h2>
-        {formatResponse(response)}
-      </div>
+<div className="flex p-8 min-w-screen h-screen ">
+  <div className="p-4 h-full w-[40%]  flex flex-col">
+    <div className="p-4 text-white w-full h-[20%] overflow-auto bg-opacity-10 bg-black m-4">
+      {text}
     </div>
+    <div className="text-white p-4 w-full h-[80%] overflow-auto bg-opacity-10 bg-black m-4 ">
+      {transcription}
+    </div>
+  </div>
+  <div ref={responseContainerRef} className="h-full w-[60%] overflow-y-auto bg-opacity-10 bg-black m-4">
+        {response ? (
+          <div className="w-full h-full p-4">
+            <Formate text={response} speed={40} />
+          </div>
+        ) : null}
+      </div>
+</div>
+
   );
 }
 
