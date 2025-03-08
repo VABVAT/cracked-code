@@ -68,11 +68,25 @@ function App() {
   return (
 <div className="flex p-8 min-w-screen h-screen ">
   <div className="p-4 h-full w-[40%]  flex flex-col">
-    <div className="p-4 text-white w-full h-[20%] overflow-auto bg-opacity-10 bg-black m-4">
-      {text}
+    <div className=" p-8 text-white w-full h-[45%] overflow-auto bg-opacity-10 bg-black m-4">
+      <div>
+      <div>
+        {text == "" ? <span>ctrl + shift + S: to start the transcription</span>: text}
+      </div>
+      <div>
+        Shortcuts:
+        <div>zzz : send screenshot with transcription</div>
+        <div>ctrl + shift + I : send transcription</div>
+        <div>ctrl + shift + R : reset the transcription</div>
+        <div>ctrl + down : scroll down</div>
+        <div>ctrl + up : scroll up</div>
+        <div>ctrl + shift + Q : maximize</div>
+        <div>ctrl + shift + M : minize</div>
+      </div>
     </div>
-    <div className="text-white p-4 w-full h-[80%] overflow-auto bg-opacity-10 bg-black m-4 ">
-      {transcription}
+    </div>
+    <div className="text-white p-4 w-full h-[55%] overflow-auto bg-opacity-10 bg-black m-4 ">
+      Transcription: {transcription}
     </div>
   </div>
   <div ref={responseContainerRef} className="h-full w-[60%] overflow-y-auto bg-opacity-10 bg-black m-4">
