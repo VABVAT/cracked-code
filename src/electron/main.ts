@@ -8,8 +8,8 @@ const { startTranscription } = require("./startListener.js");
 const {exec} = require("child_process")
 const {captureScreen} = require("./screen-capture/captureScreen.js")
 const {machineIdSync} = require('node-machine-id')
-
-
+const {Claude} = require('./Claude.js')
+const {advClaude} = require('./claudeAdv.js')
 var exists = false;
 let keySequence = "";
 app.on("ready" , () => {
@@ -156,7 +156,7 @@ app.on("ready" , () => {
 
     ipcMain.handle('getAdvCode', async (_:Event, prompt:string) => {
         const screenShot = await captureScreen();
-        const response = await advCode(prompt, screenShot)
+        const response = await advClaude(prompt, screenShot)
         return response
     })
     ipcMain.handle('startServer', async () => {
@@ -177,7 +177,8 @@ app.on("ready" , () => {
         return id;
     })
     ipcMain.handle('getCode', async (_:Event, prompt:string) => {
-        const response = await getCode(prompt)  
+        const response = await Claude(prompt)
+        console.log(response)  
         return response;
     })
 

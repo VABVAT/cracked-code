@@ -17,6 +17,7 @@
     "dist:linux": "npm run build:electron && npm run build && electron-builder --linux --x64"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "@deepgram/sdk": "^3.11.2",
     "@eslint/js": "^9.21.0",
     "@google/generative-ai": "^0.23.0",
