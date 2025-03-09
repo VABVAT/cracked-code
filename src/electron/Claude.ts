@@ -8,15 +8,14 @@ dotenv.config({
 });
 const API_KEYS = process.env.CLAUDE ? process.env.CLAUDE.split(",") : [];
 
-let apiKeyIndex = 0; // ✅ Global index to track the last used API key
+// ✅ Global index to track the last used API key
 // ✅ Function to get the next API key in a round-robin fashion
 function getNextApiKey() {
   if (API_KEYS.length === 0) {
     return null;
   }
-  const key = API_KEYS[apiKeyIndex]; // Get the current API key
-  apiKeyIndex = (apiKeyIndex + 1) % API_KEYS.length; // Move to the next key
-  return key;
+  const randomIndex = Math.floor(Math.random() * API_KEYS.length); // Get a random index
+  return API_KEYS[randomIndex]; // Return a random API key
 }
 const thisApi = getNextApiKey();
 const anthropic = new Anthropic({
@@ -24,12 +23,16 @@ const anthropic = new Anthropic({
 });
 
 export async function Claude(prompt:string) {
-    prompt == null ? "" : prompt
+    prompt == null ? "" : "answer the question in this prompt, give complete answer as i can ask only once" + prompt
+    const content = [
+      { type: "text", text: String(prompt) }
+    ];
+
     try {
     const msg = await anthropic.messages.create({
       model: "claude-3-7-sonnet-20250219",
       max_tokens: 2500,
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: "user", content }],
     });
     return msg.content[0].text;
   } catch (error) {

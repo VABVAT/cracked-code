@@ -10,22 +10,16 @@ dotenv.config({
 
 // ✅ Load API keys as an array from the environment variable
 const API_KEYS = process.env.CLAUDE ? process.env.CLAUDE.split(",") : [];
-
-let apiKeyIndex = 0; // ✅ Track last used key
-const failedKeys = new Set(); // ✅ Store failing keys
+// ✅ Track last used key
+ // ✅ Store failing keys
 
 // ✅ Function to get the next working API key
 function getNextApiKey() {
   if (API_KEYS.length === 0) {
-    console.error("❌ No API keys found!");
     return null;
   }
- // To prevent infinite loops
-    const key = API_KEYS[apiKeyIndex];
-    apiKeyIndex = (apiKeyIndex + 1) % API_KEYS.length; // Move to the next key
-
-  // ✅ If all keys failed, clear the failed list and try again
-  return key; // Try the first key again
+  const randomIndex = Math.floor(Math.random() * API_KEYS.length); // Get a random index
+  return API_KEYS[randomIndex]; // Return a random API key
 }
 
 /**
@@ -34,11 +28,11 @@ function getNextApiKey() {
  * @param {string} imageBase64 - The Base64-encoded image data.
  * @param {string} [mimeType="image/png"] - The image MIME type (default: PNG).
  * @returns {Promise<string>} - AI-generated response.
- */
+*/
 export async function advClaude(prompt: string | null, imageBase64:string, mimeType = "image/png") {
   let apiKey = getNextApiKey();
   if (!apiKey) return null; // Stop if no API key is available
-  prompt = prompt == null ? "give absolutely complete solution for this problem, give me code in C++ if possible, or give any possible help, also i can ask you only once so just give me all you have" : (prompt + " write code for this problem if it is asked write code in C++ otherwise just respond with answer ");
+  prompt = prompt == null ? "give absolutely complete solution for this problem, give me code in C++ if possible, or give any possible help, also i can ask you only once so just give me all you have" : (prompt + "Give complete answer, write code for this problem if it is asked write code in C++ otherwise just respond with answer ");
   const anthropic = new Anthropic({ apiKey });
 
   try {
@@ -69,7 +63,6 @@ export async function advClaude(prompt: string | null, imageBase64:string, mimeT
     return responseText;
   } catch (error) {
     console.error(`❌ API key failed: ${apiKey}, skipping...`, error);
-    failedKeys.add(apiKey); // ✅ Mark this key as failed
     return advClaude(prompt, imageBase64, mimeType); // ✅ Retry with the next available key
   }
 }

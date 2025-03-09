@@ -143,11 +143,11 @@ app.on("ready" , () => {
         mainWindow.webContents.send("scroll-up");
       });
 
-    globalShortcut.register("Control+Shift+M", () => {
-        if (mainWindow) {
-            mainWindow.minimize(); // Minimize the window
-        }
-    });
+    // globalShortcut.register("Control+Shift+M", () => {
+    //     if (mainWindow) {
+    //         mainWindow.minimize(); // Minimize the window
+    //     }
+    // });
       
     ipcMain.on('ffmpeg', (_:Event) => {
         //@ts-ignore
