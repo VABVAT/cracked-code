@@ -15,6 +15,7 @@ function App() {
   // text -> server-response, transcription -> transcrption, repsonse -> reposnse 
   useEffect(() => {
     // window.electron.scroll()
+    
     //@ts-ignore    
     window.electron.onScrollDown(() => {
       if (responseContainerRef.current) {
@@ -50,15 +51,17 @@ function App() {
   }
 
   async function sendAdvanced() {
+    setResponse(null)
     //@ts-ignore
       window.electron.sendImageWithPrompt(transcription).then((resp:string) => setResponse(resp))
-      setResponse(null)
+      
   }
 
   async function sendToAi() {
+    setResponse(null)
     //@ts-ignore
     window.electron.airesponse(transcription).then((resp: string) => setResponse(resp));
-    setResponse(null)
+    
   }
   
   function reset(){
@@ -66,9 +69,9 @@ function App() {
     
   }
   return (
-<div className="flex p-8 min-w-screen h-screen ">
+<div className="flex p-4 min-w-screen h-screen ">
   <div className="p-4 h-full w-[40%]  flex flex-col">
-    <div className=" p-8 text-white w-full h-[45%] overflow-auto bg-opacity-10 bg-black m-4">
+    <div className=" p-8 text-white w-full h-[45%] overflow-auto bg-opacity-40 bg-black m-4">
       <div>
       <div>
         {text == "" ? <span>ctrl + shift + S: to start the transcription</span>: text}
@@ -80,16 +83,16 @@ function App() {
         <div>ctrl + shift + R : reset the transcription</div>
         <div>ctrl + down : scroll down</div>
         <div>ctrl + up : scroll up</div>
-        <div>ctrl + shift + Q : maximize</div>
-        <div>ctrl + shift + M : minize</div>
+        <div>ctrl + shift + Q : maximize/minimiZe</div>
+        {/* <div>ctrl + shift + M : minize</div> */}
       </div>
     </div>
     </div>
-    <div className="text-white p-4 w-full h-[55%] overflow-auto bg-opacity-10 bg-black m-4 ">
+    <div className="text-white p-4 w-full h-[55%] overflow-auto bg-opacity-40 bg-black m-4 ">
       Transcription: {transcription}
     </div>
   </div>
-  <div ref={responseContainerRef} className="h-full w-[60%] overflow-y-auto bg-opacity-10 bg-black m-4">
+  <div ref={responseContainerRef} className="h-full w-[60%] overflow-y-auto bg-opacity-40 bg-black m-4">
         {response ? (
           <div className="w-full h-full p-4">
             <Formate text={response} speed={40} />

@@ -30,21 +30,21 @@ app.on("ready", () => {
             backgroundThrottling: false
         }
     });
-    const registerKeys = ["Z"]; // Register necessary keys
-    registerKeys.forEach((key) => {
-        globalShortcut.register(key, () => {
-            keySequence += key.toLowerCase(); // Store lowercase key presses
-            if (keySequence.endsWith("zzz")) {
-                mainWindow.webContents.send('send-screenshot');
-                console.log("ZAZ sequence detected!");
-                keySequence = ""; // Reset after detection
-            }
-            // Keep the sequence buffer small (max 3 characters)
-            if (keySequence.length > 3) {
-                keySequence = keySequence.slice(-3);
-            }
-        });
-    });
+    // const registerKeys = ["Z"]; // Register necessary keys
+    // registerKeys.forEach((key) => {
+    //   globalShortcut.register(key, () => {
+    //     keySequence += key.toLowerCase(); // Store lowercase key presses
+    //     if (keySequence.endsWith("zzz")) {
+    //       mainWindow.webContents.send('send-screenshot')
+    //       console.log("ZAZ sequence detected!");
+    //       keySequence = ""; // Reset after detection
+    //     }
+    // Keep the sequence buffer small (max 3 characters)
+    //     if (keySequence.length > 3) {
+    //       keySequence = keySequence.slice(-3);
+    //     }
+    //   });
+    // });
     // mainWindow.setIgnoreMouseEvents(true, { forward: true });
     // function moveWindow(xOffset:any, yOffset:any) {
     //     if (!mainWindow) return;
@@ -102,6 +102,10 @@ app.on("ready", () => {
             mainWindow.webContents.send("focus-input"); // Send event to renderer
         }
     });
+    globalShortcut.register('Control+Shift+Z', () => {
+        if (mainWindow)
+            mainWindow.webContents.send('send-screenshot');
+    });
     globalShortcut.register("Control+Shift+S", () => {
         if (mainWindow) {
             mainWindow.webContents.send('start-server');
@@ -133,18 +137,27 @@ app.on("ready", () => {
     globalShortcut.register("Ctrl+Up", () => {
         mainWindow.webContents.send("scroll-up");
     });
-    globalShortcut.register("Control+Shift+M", () => {
-        if (mainWindow) {
-            mainWindow.minimize(); // Minimize the window
-        }
-    });
     ipcMain.on('ffmpeg', (_) => {
         //@ts-ignore
         _.sender.send('ff-status', exists);
     });
+    globalShortcut.register("Control+Shift+C", () => {
+        if (mainWindow) {
+            mainWindow.webContents.send("cycle-response");
+        }
+    });
+    let currentResponseIndex = 0;
+    ipcMain.on("cycle-response", (event) => {
+        const responses = JSON.parse(localStorage.getItem("responses") || "[]");
+        if (responses.length === 0)
+            return;
+        currentResponseIndex = (currentResponseIndex + 1) % responses.length;
+        const nextResponse = responses[currentResponseIndex];
+        event.sender.send("cycled-response", nextResponse);
+    });
     ipcMain.handle('getAdvCode', async (_, prompt) => {
         const screenShot = await captureScreen();
-        const response = await advClaude(prompt, screenShot);
+        const response = await advCode(prompt, screenShot);
         return response;
     });
     ipcMain.handle('startServer', async () => {
@@ -157,14 +170,12 @@ app.on("ready", () => {
             return "error starting the server please see the documentation --docs";
         }
     });
-    // ipcMain.on('transcription-arrived', (_, data:string) => {
-    // })
     ipcMain.handle('need-key', async () => {
         const id = machineIdSync();
         return id;
     });
     ipcMain.handle('getCode', async (_, prompt) => {
-        const response = await Claude(prompt);
+        const response = await getCode(prompt);
         console.log(response);
         return response;
     });
