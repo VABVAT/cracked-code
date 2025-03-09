@@ -9,7 +9,7 @@ interface FormatResponseProps {
   speed?: number;
 }
 
-const Formate: React.FC<FormatResponseProps> = ({ text, speed = 50 }) => {
+const Formate: React.FC<FormatResponseProps> = ({ text, speed = 3 }) => {
   const [displayedText, setDisplayedText] = useState<string>("");
   const [index, setIndex] = useState<number>(0);
 
@@ -24,7 +24,7 @@ const Formate: React.FC<FormatResponseProps> = ({ text, speed = 50 }) => {
   }, [index, text, speed]);
 
   return (
-    <div className="text-white">
+    <div>
       <ReactMarkdown
         children={displayedText}
         components={{

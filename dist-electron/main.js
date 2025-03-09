@@ -9,10 +9,10 @@ const { startTranscription } = require("./startListener.js");
 const { exec } = require("child_process");
 const { captureScreen } = require("./screen-capture/captureScreen.js");
 const { machineIdSync } = require('node-machine-id');
-const { Claude } = require('./Claude.js');
-const { advClaude } = require('./claudeAdv.js');
+// const {Claude} = require('./Claude.js')
+// const {advClaude} = require('./claudeAdv.js')
 var exists = false;
-let keySequence = "";
+// let keySequence = "";
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
         // width: 1920,
@@ -102,6 +102,16 @@ app.on("ready", () => {
             mainWindow.webContents.send("focus-input"); // Send event to renderer
         }
     });
+    globalShortcut.register('Control+Shift+M', () => {
+        if (mainWindow) {
+            mainWindow.webContents.send('mode-switch');
+        }
+    });
+    globalShortcut.register("Control+Shift+C", () => {
+        if (mainWindow) {
+            mainWindow.webContents.send("cycle");
+        }
+    });
     globalShortcut.register('Control+Shift+Z', () => {
         if (mainWindow)
             mainWindow.webContents.send('send-screenshot');
@@ -140,20 +150,6 @@ app.on("ready", () => {
     ipcMain.on('ffmpeg', (_) => {
         //@ts-ignore
         _.sender.send('ff-status', exists);
-    });
-    globalShortcut.register("Control+Shift+C", () => {
-        if (mainWindow) {
-            mainWindow.webContents.send("cycle-response");
-        }
-    });
-    let currentResponseIndex = 0;
-    ipcMain.on("cycle-response", (event) => {
-        const responses = JSON.parse(localStorage.getItem("responses") || "[]");
-        if (responses.length === 0)
-            return;
-        currentResponseIndex = (currentResponseIndex + 1) % responses.length;
-        const nextResponse = responses[currentResponseIndex];
-        event.sender.send("cycled-response", nextResponse);
     });
     ipcMain.handle('getAdvCode', async (_, prompt) => {
         const screenShot = await captureScreen();

@@ -25,8 +25,6 @@ electron.contextBridge.exposeInMainWorld("electron",{
     rr: (callback:() => void) => ipcRenderer.on('rr', (_:Event) => callback()),
     onScrollDown: (callback: () => void) => ipcRenderer.on("scroll-down", callback),
     onScrollUp: (callback: () => void) => ipcRenderer.on("scroll-up", callback),
-    // cycleResponse: () => ipcRenderer.send("cycle-response"),
-    // onCycleResponse: (callback: (response: string) => void) => {
-    //   ipcRenderer.on("cycled-response", (_:Event, response:any) => callback(response));
-    // }
+    cycleResponse: (callback: () => void) => ipcRenderer.on("cycle", (_:Event) => callback()),
+    mode: (callback: () => void) => ipcRenderer.on('mode-switch', (_:Event) => callback())
 })
