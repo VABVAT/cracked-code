@@ -10,20 +10,24 @@ electron.contextBridge.exposeInMainWorld("electron", {
     //! passing functions from front-end to back-end
     sendText: (callback) => ipcRenderer.on('sys-audio', (_, data) => callback(data)),
     transcription: (callback) => ipcRenderer.on('transcription-arrived', (_, data) => callback(data)),
-    // returns promise to frontend
     startServer: () => ipcRenderer.invoke('startServer'),
     airesponse: (prompt) => ipcRenderer.invoke('getCode', prompt),
     sendImageWithPrompt: (prompt) => ipcRenderer.invoke('getAdvCode', prompt),
+    sendImageWithPromptC: (prompt) => ipcRenderer.invoke('getClaudeAdvCode', prompt),
     hardwareId: () => ipcRenderer.invoke('need-key'),
     ffmpegStatus: () => ipcRenderer.send('ffmpeg'),
     ffRecieve: (callback) => ipcRenderer.on('ff-status', (_, data) => callback(data)),
     listenerFocus: (callback) => ipcRenderer.on("focus-input", (_) => callback()),
     sendSS: (callback) => ipcRenderer.on('send-screenshot', (_) => callback()),
     vc: (callback) => ipcRenderer.on('start-server', (_) => callback()),
+    sendSSClaude: (callback) => ipcRenderer.on('send-screenshot-claude', (_) => callback()),
     sai: (callback) => ipcRenderer.on('sai', (_) => callback()),
+    scai: (callback) => ipcRenderer.on('scai', (_) => callback()),
     rr: (callback) => ipcRenderer.on('rr', (_) => callback()),
     onScrollDown: (callback) => ipcRenderer.on("scroll-down", callback),
     onScrollUp: (callback) => ipcRenderer.on("scroll-up", callback),
     cycleResponse: (callback) => ipcRenderer.on("cycle", (_) => callback()),
-    mode: (callback) => ipcRenderer.on('mode-switch', (_) => callback())
+    mode: (callback) => ipcRenderer.on('mode-switch', (_) => callback()),
+    ClaudeResponse: (prompt) => ipcRenderer.invoke('getClaudeCode', prompt)
+    // sendClaudeImageWithPrompt:(prompt:string) => ipcRenderer.invoke('getClaudeAdvCode', prompt)
 });

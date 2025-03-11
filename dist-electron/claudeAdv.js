@@ -32,7 +32,7 @@ async function advClaude(prompt, imageBase64, mimeType = "image/png") {
     let apiKey = getNextApiKey();
     if (!apiKey)
         return null; // Stop if no API key is available
-    prompt = prompt == null ? "give absolutely complete solution for this problem, give me code in C++ if possible, or give any possible help, also i can ask you only once so just give me all you have" : (prompt + "Give complete answer, write code for this problem if it is asked write code in C++ otherwise just respond with answer ");
+    prompt = (prompt == null) ? "give answer in C++ give final solution that works" : (prompt + "Give complete answer, write code for this problem if it is asked write code in C++ otherwise just respond with answer ");
     const anthropic = new Anthropic({ apiKey });
     try {
         // ✅ Prepare image content
@@ -50,7 +50,7 @@ async function advClaude(prompt, imageBase64, mimeType = "image/png") {
         // ✅ Send prompt + image to Claude
         const msg = await anthropic.messages.create({
             model: "claude-3-7-sonnet-20250219",
-            max_tokens: 2500,
+            max_tokens: 3500,
             messages: [{ role: "user", content }],
         });
         console.log(msg);

@@ -49,6 +49,10 @@ function App() {
     window.electron.vc(() => startListening())
     //@ts-ignore
     window.electron.sai(() =>sendToAi())
+    //@ts-ignore
+    window.electron.scai(() => sendToAiC())
+    //@ts-ignore
+    window.electron.sendSSClaude(() => sendAdvancedC())
   }, [])
 
   async function startListening() {
@@ -67,7 +71,26 @@ function App() {
         setResponse(resp)
         if(localStorage.getItem('response')){
           const curr = JSON.parse(localStorage.getItem('response') || '[]')
-          if(curr.length >= 3) curr.shift();
+          if(curr.length >= 5) curr.shift();
+          curr.push(resp)
+          localStorage.setItem('response', JSON.stringify(curr))
+          respIndex = curr.length-1
+        }else{
+          const arr = []
+          arr.push(resp)
+          localStorage.setItem('response', JSON.stringify(arr))
+          respIndex = 0
+        }
+      })
+  }
+  async function sendAdvancedC() {
+    setResponse(null)
+    //@ts-ignore
+      window.electron.sendImageWithPromptC(transcription).then((resp:string) => {
+        setResponse(resp)
+        if(localStorage.getItem('response')){
+          const curr = JSON.parse(localStorage.getItem('response') || '[]')
+          if(curr.length >= 5) curr.shift();
           curr.push(resp)
           localStorage.setItem('response', JSON.stringify(curr))
           respIndex = curr.length-1
@@ -88,7 +111,7 @@ function App() {
       setResponse(resp);
       if(localStorage.getItem('response')){
         const curr = JSON.parse(localStorage.getItem('response') || '[]')
-        if(curr.length >= 3) curr.shift();
+        if(curr.length >= 5) curr.shift();
         curr.push(resp)
         localStorage.setItem('response', JSON.stringify(curr))
       }else{
@@ -99,7 +122,24 @@ function App() {
     });
     
   }
-  
+  async function sendToAiC() {
+    setResponse(null)
+    //@ts-ignore
+    window.electron.ClaudeResponse(transcription).then((resp: string) => {
+      setResponse(resp);
+      if(localStorage.getItem('response')){
+        const curr = JSON.parse(localStorage.getItem('response') || '[]')
+        if(curr.length >= 5) curr.shift();
+        curr.push(resp)
+        localStorage.setItem('response', JSON.stringify(curr))
+      }else{
+        const arr = []
+        arr.push(resp)
+        localStorage.setItem('response', JSON.stringify(arr))
+      }
+    });
+    
+  }
   function reset(){
     setTranscription("")
     
@@ -113,14 +153,6 @@ function App() {
         {text == "" ? <span>ctrl + shift + S: to start the transcription</span>: text}
       </div>
       <div>
-        {/* Shortcuts:
-        <div>ctrl + shift + Z</div>
-        <div>ctrl + shift + I : send transcription</div>
-        <div>ctrl + shift + R : reset the transcription</div>
-        <div>ctrl + down : scroll down</div>
-        <div>ctrl + up : scroll up</div>
-        <div>ctrl + shift + Q : maximize/minimiZe</div> */}
-        {/* <div>ctrl + shift + M : minize</div> */}
       </div>
     </div>
     </div>

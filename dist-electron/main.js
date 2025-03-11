@@ -9,8 +9,8 @@ const { startTranscription } = require("./startListener.js");
 const { exec } = require("child_process");
 const { captureScreen } = require("./screen-capture/captureScreen.js");
 const { machineIdSync } = require('node-machine-id');
-// const {Claude} = require('./Claude.js')
-// const {advClaude} = require('./claudeAdv.js')
+const { Claude } = require('./Claude.js');
+const { advClaude } = require('./claudeAdv.js');
 var exists = false;
 // let keySequence = "";
 app.on("ready", () => {
@@ -97,11 +97,11 @@ app.on("ready", () => {
             exists = true;
         }
     });
-    globalShortcut.register("Control+Shift+F", () => {
-        if (mainWindow) {
-            mainWindow.webContents.send("focus-input"); // Send event to renderer
-        }
-    });
+    // globalShortcut.register("Control+Shift+F", () => {
+    //     if (mainWindow) {
+    //         mainWindow.webContents.send("focus-input"); // Send event to renderer
+    //     }
+    // });
     globalShortcut.register('Control+Shift+M', () => {
         if (mainWindow) {
             mainWindow.webContents.send('mode-switch');
@@ -116,6 +116,10 @@ app.on("ready", () => {
         if (mainWindow)
             mainWindow.webContents.send('send-screenshot');
     });
+    globalShortcut.register('Control+Shift+F', () => {
+        if (mainWindow)
+            mainWindow.webContents.send('send-screenshot-claude');
+    });
     globalShortcut.register("Control+Shift+S", () => {
         if (mainWindow) {
             mainWindow.webContents.send('start-server');
@@ -124,6 +128,11 @@ app.on("ready", () => {
     globalShortcut.register("Control+Shift+I", () => {
         if (mainWindow) {
             mainWindow.webContents.send('sai');
+        }
+    });
+    globalShortcut.register("Control+Shift+A", () => {
+        if (mainWindow) {
+            mainWindow.webContents.send('scai');
         }
     });
     globalShortcut.register("Control+Shift+R", () => {
@@ -156,6 +165,11 @@ app.on("ready", () => {
         const response = await advCode(prompt, screenShot);
         return response;
     });
+    ipcMain.handle('getClaudeAdvCode', async (_, prompt) => {
+        const screenShot = await captureScreen();
+        const response = await advClaude(prompt, screenShot);
+        return response;
+    });
     ipcMain.handle('startServer', async () => {
         // whatever is returned here goes to app.tsx 
         try {
@@ -172,6 +186,11 @@ app.on("ready", () => {
     });
     ipcMain.handle('getCode', async (_, prompt) => {
         const response = await getCode(prompt);
+        console.log(response);
+        return response;
+    });
+    ipcMain.handle('getClaudeCode', async (_, prompt) => {
+        const response = await Claude(prompt);
         console.log(response);
         return response;
     });
