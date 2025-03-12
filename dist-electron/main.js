@@ -1,4 +1,5 @@
 "use strict";
+// import { generateCode } from "./advCode";
 const { advCode } = require("./advCode.js");
 const { getCode } = require("./getcode.js");
 const { app, BrowserWindow, ipcMain, globalShortcut, dialog } = require("electron");
@@ -12,7 +13,6 @@ const { machineIdSync } = require('node-machine-id');
 const { Claude } = require('./Claude.js');
 const { advClaude } = require('./claudeAdv.js');
 var exists = false;
-// let keySequence = "";
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
         // width: 1920,
@@ -30,27 +30,10 @@ app.on("ready", () => {
             backgroundThrottling: false
         }
     });
-    // const registerKeys = ["Z"]; // Register necessary keys
-    // registerKeys.forEach((key) => {
-    //   globalShortcut.register(key, () => {
-    //     keySequence += key.toLowerCase(); // Store lowercase key presses
-    //     if (keySequence.endsWith("zzz")) {
-    //       mainWindow.webContents.send('send-screenshot')
-    //       console.log("ZAZ sequence detected!");
-    //       keySequence = ""; // Reset after detection
-    //     }
-    // Keep the sequence buffer small (max 3 characters)
-    //     if (keySequence.length > 3) {
-    //       keySequence = keySequence.slice(-3);
-    //     }
-    //   });
+    // mainWindow.on('ready-to-show', () => {
+    //     const hwnd = mainWindow.getNativeWindowHandle();
+    //     user32.SetWindowDisplayAffinity(hwnd, 1); // Prevents screen capture
     // });
-    // mainWindow.setIgnoreMouseEvents(true, { forward: true });
-    // function moveWindow(xOffset:any, yOffset:any) {
-    //     if (!mainWindow) return;
-    //     let {x, y} = mainWindow.getBounds();
-    //     mainWindow.setBounds({ x: x + xOffset, y: y + yOffset, width: 800, height: 800 });
-    // }
     if (isDev()) {
         mainWindow.loadURL("http://localhost:3000");
     }
@@ -160,10 +143,9 @@ app.on("ready", () => {
         //@ts-ignore
         _.sender.send('ff-status', exists);
     });
-    ipcMain.handle('getAdvCode', async (_, prompt) => {
+    ipcMain.on('send-advanced-request', async (eve, prompt) => {
         const screenShot = await captureScreen();
-        const response = await advCode(prompt, screenShot);
-        return response;
+        advCode(mainWindow, eve, prompt, screenShot);
     });
     ipcMain.handle('getClaudeAdvCode', async (_, prompt) => {
         const screenShot = await captureScreen();
@@ -199,4 +181,8 @@ app.on("ready", () => {
         if (mainWindow)
             mainWindow.destroy();
     });
+    // ipcMain.on("send-advanced-request", (event, prompt) => {
+    //     (prompt, event);
+    //     generateCode(prompt, event); 
+    // });
 });

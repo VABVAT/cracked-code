@@ -28,6 +28,14 @@ electron.contextBridge.exposeInMainWorld("electron", {
     onScrollUp: (callback) => ipcRenderer.on("scroll-up", callback),
     cycleResponse: (callback) => ipcRenderer.on("cycle", (_) => callback()),
     mode: (callback) => ipcRenderer.on('mode-switch', (_) => callback()),
-    ClaudeResponse: (prompt) => ipcRenderer.invoke('getClaudeCode', prompt)
-    // sendClaudeImageWithPrompt:(prompt:string) => ipcRenderer.invoke('getClaudeAdvCode', prompt)
+    ClaudeResponse: (prompt) => ipcRenderer.invoke('getClaudeCode', prompt),
+    streamDeepSeekResponse: (prompt, onData, onEnd, onError) => {
+        ipcRenderer.removeAllListeners("stream-response");
+        ipcRenderer.removeAllListeners("stream-end");
+        ipcRenderer.removeAllListeners("stream-error");
+        ipcRenderer.on("stream-response", (_, chunk) => { onData(chunk); });
+        ipcRenderer.on("stream-end", () => onEnd());
+        ipcRenderer.on("stream-error", (_, errorMessage) => onError(errorMessage));
+        ipcRenderer.send("send-advanced-request", prompt);
+    }
 });

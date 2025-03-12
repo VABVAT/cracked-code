@@ -64,25 +64,34 @@ function App() {
     );
   }
 
-  async function sendAdvanced() {
-    setResponse(null)
+  async function sendAdvanced() { 
+    setResponse(null);
+    let fullResponse = ""; // Store response in a variable
+
     //@ts-ignore
-      window.electron.sendImageWithPrompt(transcription).then((resp:string) => {
-        setResponse(resp)
-        if(localStorage.getItem('response')){
-          const curr = JSON.parse(localStorage.getItem('response') || '[]')
-          if(curr.length >= 5) curr.shift();
-          curr.push(resp)
-          localStorage.setItem('response', JSON.stringify(curr))
-          respIndex = curr.length-1
-        }else{
-          const arr = []
-          arr.push(resp)
-          localStorage.setItem('response', JSON.stringify(arr))
-          respIndex = 0
+    window.electron.streamDeepSeekResponse(
+        transcription, 
+        (chunk:any) => {
+            console.log("reached");
+            fullResponse += chunk; // Append chunk to full response
+            setResponse((prev) => prev ? prev + chunk : chunk);
+        },
+        () => {
+            const storedResponses = JSON.parse(localStorage.getItem('response') || '[]');
+
+            if (storedResponses.length >= 5) storedResponses.shift(); // Maintain only 5 responses
+            storedResponses.push(fullResponse); // Use fullResponse instead of state
+            
+            localStorage.setItem('response', JSON.stringify(storedResponses));
+            respIndex = storedResponses.length - 1; // Update index
+        },
+        (errorMessage:any) => {
+            console.error("Streaming error:", errorMessage);
+            setResponse("Error fetching response");
         }
-      })
-  }
+    );
+}
+
   async function sendAdvancedC() {
     setResponse(null)
     //@ts-ignore
@@ -163,7 +172,7 @@ function App() {
   <div ref={responseContainerRef} className={`font-semibold h-full ${darkMode ? "text-white" : "text-black"} w-[60%] overflow-y-auto bg-opacity-40  m-4 ${darkMode ? "bg-black" : "bg-white"}`}>
         {response ? (
           <div className="w-full h-full p-4">
-            <Formate text={response} speed={3} />
+           {<Formate text={response} />}
           </div>
         ) : null}
       </div>
