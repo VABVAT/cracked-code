@@ -32,10 +32,12 @@ async function advClaude(prompt, imageBase64, mimeType = "image/png") {
     let apiKey = getNextApiKey();
     if (!apiKey)
         return null; // Stop if no API key is available
-    prompt = (prompt == null) ? "give answer in C++ give final solution that works" : (prompt + "Give complete answer, write code for this problem if it is asked write code in C++ otherwise just respond with answer ");
+    // console.log(prompt)
+    prompt = (prompt == null || prompt == '') ? "give answer in C++ give final solution that works" : ("following is a convo from a live interview and you are my helper " + prompt + "Give complete answer, write code for this problem if it is asked, otherwise just respond with answer,if asked write code in C++ , give intution and explanation as well");
     const anthropic = new Anthropic({ apiKey });
     try {
         // ✅ Prepare image content
+        console.log("Prompt:", prompt);
         const content = [
             { type: "text", text: String(prompt) }, // 🛠 Claude needs this structure
             {

@@ -86,11 +86,6 @@ app.on("ready" , () => {
             exists = true
         }
       });
-    // globalShortcut.register("Control+Shift+F", () => {
-    //     if (mainWindow) {
-    //         mainWindow.webContents.send("focus-input"); // Send event to renderer
-    //     }
-    // });
     globalShortcut.register('Control+Shift+M', () => {
         if(mainWindow){
             mainWindow.webContents.send('mode-switch');
@@ -158,6 +153,7 @@ app.on("ready" , () => {
     })
 
     ipcMain.handle('getClaudeAdvCode', async (_:Event, prompt:string) => {
+        // console.log(prompt)
         const screenShot = await captureScreen();
         const response = await advClaude(prompt, screenShot)
         return response
@@ -193,9 +189,5 @@ app.on("ready" , () => {
         globalShortcut.unregisterAll();
         if (mainWindow) mainWindow.destroy();
     });
-    // ipcMain.on("send-advanced-request", (event, prompt) => {
-    //     (prompt, event);
-    //     generateCode(prompt, event); 
-    // });
     
 })

@@ -11,6 +11,10 @@ function App() {
   const [response, setResponse] = useState<string | null>(null);
   const responseContainerRef = useRef<HTMLDivElement>(null);
   const [darkMode, setDarkMode] = useState<boolean>(true)
+  const transRef = useRef<string>('');
+  useEffect(() => {
+    transRef.current = transcription
+  }, [transcription])
   useEffect(() => {
     // window.electron.scroll()
     //@ts-ignore
@@ -64,7 +68,7 @@ function App() {
     );
   }
 
-  async function sendAdvanced() { 
+async function sendAdvanced() { 
     setResponse(null);
     let fullResponse = ""; // Store response in a variable
 
@@ -94,8 +98,10 @@ function App() {
 
   async function sendAdvancedC() {
     setResponse(null)
+    console.log(transRef.current);
+    
     //@ts-ignore
-      window.electron.sendImageWithPromptC(transcription).then((resp:string) => {
+      window.electron.sendImageWithPromptC(transRef.current).then((resp:string) => {
         setResponse(resp)
         if(localStorage.getItem('response')){
           const curr = JSON.parse(localStorage.getItem('response') || '[]')
@@ -116,7 +122,7 @@ function App() {
   async function sendToAi() {
     setResponse(null)
     //@ts-ignore
-    window.electron.airesponse(transcription).then((resp: string) => {
+    window.electron.airesponse(transRef.current).then((resp: string) => {
       setResponse(resp);
       if(localStorage.getItem('response')){
         const curr = JSON.parse(localStorage.getItem('response') || '[]')
@@ -134,7 +140,7 @@ function App() {
   async function sendToAiC() {
     setResponse(null)
     //@ts-ignore
-    window.electron.ClaudeResponse(transcription).then((resp: string) => {
+    window.electron.ClaudeResponse(transRef.current).then((resp: string) => {
       setResponse(resp);
       if(localStorage.getItem('response')){
         const curr = JSON.parse(localStorage.getItem('response') || '[]')
@@ -150,6 +156,7 @@ function App() {
     
   }
   function reset(){
+    transRef.current = '';
     setTranscription("")
     
   }
@@ -158,10 +165,12 @@ function App() {
   <div className="p-4 h-full w-[40%]  flex flex-col">
     <div className={`p-8 font-semibold ${darkMode ? "text-white": "text-black"} w-full h-[45%] overflow-auto bg-opacity-40 ${darkMode ? "bg-black": "bg-white"} m-4`}>
       <div>
-      <div>
-        {text == "" ? <span>ctrl + shift + S: to start the transcription</span>: text}
-      </div>
-      <div>
+      <div className="text-small font-bold">
+        <div>ctrl + shift + Z: image with no prompt deepseek</div>
+        <div>ctrl + shift + F: image with prompt claude answers with intution</div>
+        <div>ctrl + shift + A: only prompt using claude</div>
+        <div>ctrl + shift + Q: minimize</div>
+        <div>ctrl + shift + R: reset transcription</div>
       </div>
     </div>
     </div>
