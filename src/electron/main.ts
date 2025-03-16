@@ -12,6 +12,7 @@ const {captureScreen} = require("./screen-capture/captureScreen.js")
 const {machineIdSync} = require('node-machine-id')
 const {Claude} = require('./Claude.js')
 const {advClaude} = require('./claudeAdv.js')
+const {sendToDeepSeek} = require('./multi-image-models/deepseekMulti.js')
 var exists = false;
 
 export let imageCache:string[] = [];
@@ -126,7 +127,7 @@ app.on("ready" , () => {
     })
     // image storing logic -----------------------
     globalShortcut.register("Control+Shift+V", async () => {
-        await sendImageToGPT4o(imageCache, mainWindow);
+        await sendToDeepSeek(null, imageCache);
         if (Array.isArray(imageCache)) {
             imageCache.length = 0; // Clears the array without losing reference
         } else {

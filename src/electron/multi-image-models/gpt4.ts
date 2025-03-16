@@ -1,5 +1,5 @@
-const { imageCache } = require("../main.js");
-import axios from "axios";
+// const { imageCache } = require("../main.js");
+const axios = require("axios");
 const path = require("path");
 const dotenv = require("dotenv");
 const { isDev } = require("../util.js");
@@ -21,6 +21,7 @@ export async function sendImageToGPT4o(imageCache:string[], mainWindow:any) {
     const imageMessages = imageCache.map((base64Image) => ({
       type: "image_url",
       image_url: { url: `data:image/png;base64,${base64Image}` },
+      detail: "high"
     }));
 
     // Construct API request with multiple images

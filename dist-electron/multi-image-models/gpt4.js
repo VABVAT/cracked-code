@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendImageToGPT4o = sendImageToGPT4o;
-const { imageCache } = require("../main.js");
-const axios_1 = require("axios");
+// const { imageCache } = require("../main.js");
+const axios = require("axios");
 const path = require("path");
 const dotenv = require("dotenv");
 const { isDev } = require("../util.js");
@@ -22,7 +22,7 @@ async function sendImageToGPT4o(imageCache, mainWindow) {
             image_url: { url: `data:image/png;base64,${base64Image}` },
         }));
         // Construct API request with multiple images
-        const response = await axios_1.default.post("https://api.openai.com/v1/chat/completions", {
+        const response = await axios.post("https://api.openai.com/v1/chat/completions", {
             model: "gpt-4o",
             messages: [
                 {

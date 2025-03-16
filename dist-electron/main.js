@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.imageCache = void 0;
-const gpt4_js_1 = require("./multi-image-models/gpt4.js");
 // import { generateCode } from "./advCode";
 const { advCode } = require("./advCode.js");
 const { getCode } = require("./getcode.js");
@@ -15,6 +14,7 @@ const { captureScreen } = require("./screen-capture/captureScreen.js");
 const { machineIdSync } = require('node-machine-id');
 const { Claude } = require('./Claude.js');
 const { advClaude } = require('./claudeAdv.js');
+const { sendToDeepSeek } = require('./multi-image-models/deepseekMulti.js');
 var exists = false;
 exports.imageCache = [];
 app.on("ready", () => {
@@ -123,7 +123,7 @@ app.on("ready", () => {
     });
     // image storing logic -----------------------
     globalShortcut.register("Control+Shift+V", async () => {
-        await (0, gpt4_js_1.sendImageToGPT4o)(exports.imageCache, mainWindow);
+        await sendToDeepSeek(null, exports.imageCache);
         if (Array.isArray(exports.imageCache)) {
             exports.imageCache.length = 0; // Clears the array without losing reference
         }
