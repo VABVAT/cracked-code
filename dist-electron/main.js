@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.imageCache = void 0;
+const gpt4_js_1 = require("./multi-image-models/gpt4.js");
 // import { generateCode } from "./advCode";
 const { advCode } = require("./advCode.js");
 const { getCode } = require("./getcode.js");
@@ -14,7 +15,7 @@ const { captureScreen } = require("./screen-capture/captureScreen.js");
 const { machineIdSync } = require('node-machine-id');
 const { Claude } = require('./Claude.js');
 const { advClaude } = require('./claudeAdv.js');
-const { sendToDeepSeek } = require('./multi-image-models/deepseekMulti.js');
+// const {sendToDeepSeek} = require('./multi-image-models/deepseekMulti.js')
 var exists = false;
 exports.imageCache = [];
 app.on("ready", () => {
@@ -93,6 +94,9 @@ app.on("ready", () => {
             mainWindow.webContents.send('mode-switch');
         }
     });
+    globalShortcut.register('Control+Shift+D', () => {
+        exports.imageCache.length = 0;
+    });
     globalShortcut.register("Control+Shift+C", () => {
         if (mainWindow) {
             mainWindow.webContents.send("cycle");
@@ -121,9 +125,12 @@ app.on("ready", () => {
             mainWindow.webContents.send('scai');
         }
     });
+    globalShortcut.register("Control+Shift+W", () => {
+        // sendToDeepSeek(mainWindow, )
+    });
     // image storing logic -----------------------
     globalShortcut.register("Control+Shift+V", async () => {
-        await sendToDeepSeek(null, exports.imageCache);
+        await (0, gpt4_js_1.sendImageToGPT4o)(exports.imageCache, mainWindow);
         if (Array.isArray(exports.imageCache)) {
             exports.imageCache.length = 0; // Clears the array without losing reference
         }
@@ -167,13 +174,12 @@ app.on("ready", () => {
         _.sender.send('ff-status', exists);
     });
     ipcMain.on('send-advanced-request', async (eve, prompt) => {
-        const screenShot = await captureScreen();
-        advCode(mainWindow, eve, prompt, screenShot);
+        await advCode(mainWindow, eve, prompt, exports.imageCache);
     });
     ipcMain.handle('getClaudeAdvCode', async (_, prompt) => {
         // console.log(prompt)
-        const screenShot = await captureScreen();
-        const response = await advClaude(prompt, screenShot);
+        // const screenShot = await captureScreen();
+        const response = await advClaude(prompt, exports.imageCache);
         return response;
     });
     ipcMain.handle('startServer', async () => {

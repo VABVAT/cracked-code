@@ -12,7 +12,7 @@ const {captureScreen} = require("./screen-capture/captureScreen.js")
 const {machineIdSync} = require('node-machine-id')
 const {Claude} = require('./Claude.js')
 const {advClaude} = require('./claudeAdv.js')
-const {sendToDeepSeek} = require('./multi-image-models/deepseekMulti.js')
+// const {sendToDeepSeek} = require('./multi-image-models/deepseekMulti.js')
 var exists = false;
 
 export let imageCache:string[] = [];
@@ -99,6 +99,9 @@ app.on("ready" , () => {
             mainWindow.webContents.send('mode-switch');
         }
     })
+    globalShortcut.register('Control+Shift+D', () => {
+        imageCache.length = 0;
+    })
     globalShortcut.register("Control+Shift+C", () => {
         if (mainWindow) {
             mainWindow.webContents.send("cycle");
@@ -125,9 +128,14 @@ app.on("ready" , () => {
             mainWindow.webContents.send('scai')
         }
     })
+    globalShortcut.register("Control+Shift+W", () => {
+        // sendToDeepSeek(mainWindow, )
+    })
+
+
     // image storing logic -----------------------
     globalShortcut.register("Control+Shift+V", async () => {
-        await sendToDeepSeek(null, imageCache);
+        await sendImageToGPT4o(imageCache, mainWindow);
         if (Array.isArray(imageCache)) {
             imageCache.length = 0; // Clears the array without losing reference
         } else {
@@ -176,14 +184,13 @@ app.on("ready" , () => {
 
 
     ipcMain.on('send-advanced-request', async (eve:Event, prompt:string) => {
-        const screenShot = await captureScreen();
-        advCode(mainWindow, eve, prompt, screenShot)
+        await advCode(mainWindow, eve, prompt, imageCache)
     })
 
     ipcMain.handle('getClaudeAdvCode', async (_:Event, prompt:string) => {
         // console.log(prompt)
-        const screenShot = await captureScreen();
-        const response = await advClaude(prompt, screenShot)
+        // const screenShot = await captureScreen();
+        const response = await advClaude(prompt, imageCache)
         return response
     })
     ipcMain.handle('startServer', async () => {

@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const { isDev } = require("../util.js");
 const { app } = require("electron");
 
+
 dotenv.config({ path: path.join(app.getAppPath(), isDev() ? ".env" : "../dist-electron/.env") });
 const API_KEY = process.env.GPT_KEY;
 
@@ -20,8 +21,7 @@ export async function sendImageToGPT4o(imageCache:string[], mainWindow:any) {
     // Convert all images in imageCache to OpenAI format
     const imageMessages = imageCache.map((base64Image) => ({
       type: "image_url",
-      image_url: { url: `data:image/png;base64,${base64Image}` },
-      detail: "high"
+      image_url: { url: `data:image/png;base64,${base64Image}` }
     }));
 
     // Construct API request with multiple images

@@ -82,18 +82,18 @@ const genAI = new GoogleGenerativeAI(API_KEY?.toString());
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 
-export async function advCode(mainWindow:any, event:any ,prompt: string|null, imageBase64: string) {
+export async function advCode(mainWindow:any, event:any ,prompt: string|null, imageCache: string[]) {
     try {
 
-        prompt = "extract question from this image so that it can be fed to another ai" ;
-        console.log(prompt)
-        const imagePart = {
+        prompt = "Extract and explain the questions from these images so they can be fed to another AI.";
+        // console.log(prompt)
+        const imageParts = imageCache.map((base64) => ({
             inlineData: {
-                data: imageBase64,
-                mimeType: "image/png", // Change if your image is a different format (e.g., "image/jpeg")
-            }
-        };
-        const result = await model.generateContent([prompt, imagePart]);
+                data: base64,
+                mimeType: "image/png", // Adjust if needed
+            },
+        }));
+        const result = await model.generateContent([prompt, ...imageParts]);
         const rr =  result.response.text();
         console.log(rr);
         generateCode(mainWindow, rr, event)

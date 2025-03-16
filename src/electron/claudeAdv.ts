@@ -10,59 +10,63 @@ dotenv.config({
 
 // ✅ Load API keys as an array from the environment variable
 const API_KEYS = process.env.CLAUDE ? process.env.CLAUDE.split(",") : [];
-// ✅ Track last used key
- // ✅ Store failing keys
 
-// ✅ Function to get the next working API key
+// ✅ Function to get a random working API key
 function getNextApiKey() {
   if (API_KEYS.length === 0) {
     return null;
   }
-  const randomIndex = Math.floor(Math.random() * API_KEYS.length); // Get a random index
-  return API_KEYS[randomIndex]; // Return a random API key
+  const randomIndex = Math.floor(Math.random() * API_KEYS.length);
+  return API_KEYS[randomIndex];
 }
 
 /**
- * ✅ Accepts a text prompt + an image (Base64).
+ * ✅ Accepts a text prompt + multiple images (Base64).
  * @param {string | null} prompt - The text prompt (default prompt if null).
- * @param {string} imageBase64 - The Base64-encoded image data.
+ * @param {string[]} imageCache - Array of Base64-encoded image data.
  * @param {string} [mimeType="image/png"] - The image MIME type (default: PNG).
  * @returns {Promise<string>} - AI-generated response.
-*/
-export async function advClaude(prompt: string | null, imageBase64:string, mimeType = "image/png") {
+ */
+export async function advClaude(prompt: string | null, imageCache: string[], mimeType = "image/png") {
   let apiKey = getNextApiKey();
   if (!apiKey) return null; // Stop if no API key is available
-  // console.log(prompt)
-  prompt = (prompt == null || prompt == '') ? "give intution, intution , steps and answer in C++ give final solution that works" : ("following is a convo from a live interview and you are my helper " + prompt + "Give complete answer, write code for this problem if it is asked, otherwise just respond with answer,if asked write code in C++ , give intution and explanation as well");
+
+  // Default prompt setup
+  prompt = (prompt == null || prompt == '') 
+    ? "Answer the question in the images. If it's not a coding question, provide the answer. If it is a coding question, give the intuition, steps, and solution in C++."
+    : `This is a conversation from a live interview, and you are my helper: ${prompt}. Provide a complete answer. If a coding problem is present, write the solution in C++ along with intuition and explanation.`;
+
   const anthropic = new Anthropic({ apiKey });
 
   try {
-    // ✅ Prepare image content
+    // ✅ Prepare image content array (supports multiple images)
     console.log("Prompt:", prompt);
-    const content = [
-        { type: "text", text: String(prompt) }, // 🛠 Claude needs this structure
-        {
-          type: "image",
-          source: {
-            type: "base64",
-            media_type: mimeType,
-            data: imageBase64,
-          }
-        }
-      ];
+    const content: Array<{ type: string; text?: string; source?: { type: string; media_type: string; data: string } }> = [{ type: "text", text: prompt }]; // Claude requires structured content
 
-    // ✅ Send prompt + image to Claude
+    // ✅ Append all images from imageCache[]
+    imageCache.forEach(base64Image => {
+      content.push({
+        type: "image",
+        source: {
+          type: "base64",
+          media_type: mimeType,
+          data: base64Image,
+        }
+      });
+    });
+
+    // ✅ Send prompt + images to Claude
     const msg = await anthropic.messages.create({
       model: "claude-3-7-sonnet-20250219",
       max_tokens: 3500,
-      messages: [{ role: "user", content}],
+      messages: [{ role: "user", content }],
     });
-    console.log(msg)
+
+    console.log("Claude's Response:", msg);
     const responseText = msg.content[0]?.text || "No response received";
-    console.log("🔹 Claude's Response:", responseText);
     return responseText;
   } catch (error) {
     console.error(`❌ API key failed: ${apiKey}, skipping...`, error);
-    return advClaude(prompt, imageBase64, mimeType); // ✅ Retry with the next available key
+    return advClaude(prompt, imageCache, mimeType); // ✅ Retry with another API key
   }
 }

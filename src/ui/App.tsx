@@ -34,13 +34,13 @@ function App() {
     //@ts-ignore    
     window.electron.onScrollDown(() => {
       if (responseContainerRef.current) {
-        responseContainerRef.current.scrollBy({ top: 250, behavior: "smooth" });
+        responseContainerRef.current.scrollBy({ top: 320, behavior: "smooth" });
       }
     });
     //@ts-ignore
     window.electron.onScrollUp(() => {
       if (responseContainerRef.current) {
-        responseContainerRef.current.scrollBy({ top: -250, behavior: "smooth" });
+        responseContainerRef.current.scrollBy({ top: -320, behavior: "smooth" });
       }
     });
     //@ts-ignore
@@ -156,14 +156,17 @@ async function sendAdvanced() {
     <div className={`p-8 font-semibold ${darkMode ? "text-white": "text-black"} w-full h-[45%] overflow-auto bg-opacity-40 ${darkMode ? "bg-black": "bg-white"} m-4`}>
       <div>
       <div className="text-small font-bold">
-        <div>ctrl + shift + Z: image with no prompt deepseek</div>
-        <div>ctrl + shift + F: image with prompt claude answers with intution</div>
+        <div>ctrl + shift + Z: send images with no prompt deepseek reasoner</div>
+        <div>ctrl + shift + F: images with prompt claude answers with intution</div>
         <div>ctrl + shift + A: only prompt using claude</div>
+        <div>ctrl + shift + V: send images to gpt-4o</div>
+        <div>ctrl + shift + D: reset images</div>
         <div>ctrl + shift + I: only prompt to deepseek reasoner</div>
         <div>ctrl + shift + C: previous answer</div>
-        <div>ctrl + shift + X: chatGPT image with or without prompt</div>
+        <div>ctrl + shift + X: click screenshot</div>
         <div>ctrl + shift + Q: minimize</div>
         <div>ctrl + shift + R: reset transcription</div>
+        
       </div>
     </div>
     </div>

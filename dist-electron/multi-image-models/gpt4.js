@@ -19,7 +19,7 @@ async function sendImageToGPT4o(imageCache, mainWindow) {
         // Convert all images in imageCache to OpenAI format
         const imageMessages = imageCache.map((base64Image) => ({
             type: "image_url",
-            image_url: { url: `data:image/png;base64,${base64Image}` },
+            image_url: { url: `data:image/png;base64,${base64Image}` }
         }));
         // Construct API request with multiple images
         const response = await axios.post("https://api.openai.com/v1/chat/completions", {
