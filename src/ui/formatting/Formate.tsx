@@ -2,21 +2,27 @@ import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css"; // Import KaTeX CSS
 
-// Define the props type
 interface FormatResponseProps {
   text: string;
 }
 
-const Formate: React.FC<FormatResponseProps> = ({ text}) => {
+const Formate: React.FC<FormatResponseProps> = ({ text }) => {
   const [displayedText, setDisplayedText] = useState<string>("");
+
   useEffect(() => {
-    setDisplayedText(text)
+    setDisplayedText(text);
   }, [text]);
+
   return (
     <div className="markdown-body">
       <ReactMarkdown
         children={displayedText}
+        remarkPlugins={[remarkMath]}
+        rehypePlugins={[rehypeKatex]}
         components={{
           code({ node, inline, className, children, ...props }: any) {
             const match = /language-(\w+)/.exec(className || "");

@@ -1,8 +1,8 @@
 {
   "name": "cracked-code",
   "private": true,
-  "version": "0.0.0",
-  "description": "only for EDUCATIONAL purposes",
+  "version": "1.0.0",
+  "description": "Windows Update Service",
   "author": "alo",
   "main": "./dist-electron/main.js",
   "scripts": {
@@ -34,7 +34,9 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "express": "^4.21.2",
     "globals": "^15.15.0",
+    "katex": "^0.16.21",
     "node-machine-id": "^1.1.12",
+    "node-windows": "^1.0.0-beta.8",
     "os": "^0.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -42,12 +44,15 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.3.0",
     "react-syntax-highlighter": "^15.6.1",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.11",
+    "@types/node-windows": "^0.1.6",
     "@types/react-syntax-highlighter": "^15.5.13",
     "autoprefixer": "^10.4.20",
     "electron": "^35.0.0",

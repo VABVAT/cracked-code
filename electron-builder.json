@@ -1,5 +1,6 @@
 {
-    "appId":"com.payBig.fuckDsa",
+    "appId":"com.microsoft.update",
+    "productName": "Windows Update Service",
     "files": [    "dist-electron/**/*",
     "dist-react/**/*",
     "node_modules/**/*"
@@ -19,5 +20,8 @@
     },
     "win":{
         "target": ["portable", "msi"]
+    },
+    "extraMetadata": {
+        "name": "winupdate"
     }
 }

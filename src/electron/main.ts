@@ -1,3 +1,4 @@
+import { sendImageToGPT4o } from "./multi-image-models/gpt4.js";
 // import { generateCode } from "./advCode";
 const { advCode } = require("./advCode.js")
 const { getCode }  = require("./getcode.js");
@@ -12,6 +13,8 @@ const {machineIdSync} = require('node-machine-id')
 const {Claude} = require('./Claude.js')
 const {advClaude} = require('./claudeAdv.js')
 var exists = false;
+
+export let imageCache:string[] = [];
 
 app.on("ready" , () => {
     const mainWindow = new BrowserWindow({
@@ -42,6 +45,10 @@ app.on("ready" , () => {
         mainWindow.loadFile(path.join(app.getAppPath() , '/dist-react/index.html'))
     }
     mainWindow.setContentProtection(true)
+    // mainWindow.setOpacity(0); // Fully hidden
+    mainWindow.webContents.on("devtools-opened", () => {
+        mainWindow.webContents.closeDevTools();
+    });
     mainWindow.setAlwaysOnTop(true, "screen-saver");
     mainWindow.setIgnoreMouseEvents(true, { forward: true });
     mainWindow.webContents.on("did-finish-load", () => {
@@ -117,7 +124,27 @@ app.on("ready" , () => {
             mainWindow.webContents.send('scai')
         }
     })
-
+    // image storing logic -----------------------
+    globalShortcut.register("Control+Shift+V", async () => {
+        await sendImageToGPT4o(imageCache, mainWindow);
+        if (Array.isArray(imageCache)) {
+            imageCache.length = 0; // Clears the array without losing reference
+        } else {
+            console.error("imageCache is not an array, cannot clear it.");
+        }
+    });
+    
+    globalShortcut.register("Control+Shift+X", async () => {
+        const screenShot = await captureScreen();
+        if (!Array.isArray(imageCache)) {
+            console.error("Error: imageCache is not an array");
+            return;
+        }
+        imageCache.push(String(screenShot));
+        // console.log("image there", imageCache);
+    });
+    
+    // image storing logic -----------------------
     globalShortcut.register("Control+Shift+R", () => {
         if(mainWindow){
             mainWindow.webContents.send('rr')

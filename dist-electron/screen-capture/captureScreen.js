@@ -2,8 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.captureScreen = captureScreen;
 const { screen, desktopCapturer } = require("electron");
-// const fs = require("fs");
-// const path = require("path");
 // Function to capture the screen and return a hosted URL
 async function captureScreen() {
     const primaryDisplay = screen.getPrimaryDisplay();

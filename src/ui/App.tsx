@@ -6,12 +6,13 @@ import './index.css';
 // import {useHotkeys} from 'react-hotkeys-hook'
 let respIndex = 0;
 function App() {
+  //@ts-ignore
   const [text, setText] = useState("");
   const [transcription, setTranscription] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
   const responseContainerRef = useRef<HTMLDivElement>(null);
   const [darkMode, setDarkMode] = useState<boolean>(true)
-  const transRef = useRef<string>('');
+  const transRef = useRef<string|null>('');
   useEffect(() => {
     transRef.current = transcription
   }, [transcription])
@@ -33,19 +34,24 @@ function App() {
     //@ts-ignore    
     window.electron.onScrollDown(() => {
       if (responseContainerRef.current) {
-        responseContainerRef.current.scrollBy({ top: 100, behavior: "smooth" });
+        responseContainerRef.current.scrollBy({ top: 250, behavior: "smooth" });
       }
     });
     //@ts-ignore
     window.electron.onScrollUp(() => {
       if (responseContainerRef.current) {
-        responseContainerRef.current.scrollBy({ top: -100, behavior: "smooth" });
+        responseContainerRef.current.scrollBy({ top: -250, behavior: "smooth" });
       }
     });
     //@ts-ignore
     window.electron.rr(() => {
       reset()
       setText("server is still running")
+    })
+    //@ts-ignore
+    window.electron.gpt((data:any)=> {
+      setResponse(data)
+      storeResponse(data)
     })
     //@ts-ignore
     window.electron.sendSS(() => sendAdvanced());
@@ -67,6 +73,19 @@ function App() {
       setTranscription((prevText) => (prevText ? prevText + " " + data.text : data.text))
     );
   }
+
+function storeResponse(data:string){
+  if(localStorage.getItem('response')){
+    const curr = JSON.parse(localStorage.getItem('response') || '[]')
+    if(curr.length >= 5) curr.shift();
+    curr.push(data)
+    localStorage.setItem('response', JSON.stringify(curr))
+  }else{
+    const arr = []
+    arr.push(data)
+    localStorage.setItem('response', JSON.stringify(arr))
+  }
+}
 
 async function sendAdvanced() { 
     setResponse(null);
@@ -103,18 +122,7 @@ async function sendAdvanced() {
     //@ts-ignore
       window.electron.sendImageWithPromptC(transRef.current).then((resp:string) => {
         setResponse(resp)
-        if(localStorage.getItem('response')){
-          const curr = JSON.parse(localStorage.getItem('response') || '[]')
-          if(curr.length >= 5) curr.shift();
-          curr.push(resp)
-          localStorage.setItem('response', JSON.stringify(curr))
-          respIndex = curr.length-1
-        }else{
-          const arr = []
-          arr.push(resp)
-          localStorage.setItem('response', JSON.stringify(arr))
-          respIndex = 0
-        }
+        storeResponse(resp)
       })
       
   }
@@ -124,16 +132,7 @@ async function sendAdvanced() {
     //@ts-ignore
     window.electron.airesponse(transRef.current).then((resp: string) => {
       setResponse(resp);
-      if(localStorage.getItem('response')){
-        const curr = JSON.parse(localStorage.getItem('response') || '[]')
-        if(curr.length >= 5) curr.shift();
-        curr.push(resp)
-        localStorage.setItem('response', JSON.stringify(curr))
-      }else{
-        const arr = []
-        arr.push(resp)
-        localStorage.setItem('response', JSON.stringify(arr))
-      }
+      storeResponse(resp)
     });
     
   }
@@ -142,16 +141,7 @@ async function sendAdvanced() {
     //@ts-ignore
     window.electron.ClaudeResponse(transRef.current).then((resp: string) => {
       setResponse(resp);
-      if(localStorage.getItem('response')){
-        const curr = JSON.parse(localStorage.getItem('response') || '[]')
-        if(curr.length >= 5) curr.shift();
-        curr.push(resp)
-        localStorage.setItem('response', JSON.stringify(curr))
-      }else{
-        const arr = []
-        arr.push(resp)
-        localStorage.setItem('response', JSON.stringify(arr))
-      }
+      storeResponse(resp)
     });
     
   }
@@ -169,6 +159,9 @@ async function sendAdvanced() {
         <div>ctrl + shift + Z: image with no prompt deepseek</div>
         <div>ctrl + shift + F: image with prompt claude answers with intution</div>
         <div>ctrl + shift + A: only prompt using claude</div>
+        <div>ctrl + shift + I: only prompt to deepseek reasoner</div>
+        <div>ctrl + shift + C: previous answer</div>
+        <div>ctrl + shift + X: chatGPT image with or without prompt</div>
         <div>ctrl + shift + Q: minimize</div>
         <div>ctrl + shift + R: reset transcription</div>
       </div>

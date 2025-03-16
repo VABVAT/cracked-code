@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.advClaude = advClaude;
 const dotenv = require("dotenv");
 const path = require("path");
-const { isDev } = require("./util.js");
+const { isDev } = require("../util.js");
 const Anthropic = require("@anthropic-ai/sdk");
 const { app } = require("electron");
 dotenv.config({

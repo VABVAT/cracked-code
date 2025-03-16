@@ -1,4 +1,7 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.imageCache = void 0;
+const gpt4_js_1 = require("./multi-image-models/gpt4.js");
 // import { generateCode } from "./advCode";
 const { advCode } = require("./advCode.js");
 const { getCode } = require("./getcode.js");
@@ -13,6 +16,7 @@ const { machineIdSync } = require('node-machine-id');
 const { Claude } = require('./Claude.js');
 const { advClaude } = require('./claudeAdv.js');
 var exists = false;
+exports.imageCache = [];
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
         // width: 1920,
@@ -41,6 +45,10 @@ app.on("ready", () => {
         mainWindow.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'));
     }
     mainWindow.setContentProtection(true);
+    // mainWindow.setOpacity(0); // Fully hidden
+    mainWindow.webContents.on("devtools-opened", () => {
+        mainWindow.webContents.closeDevTools();
+    });
     mainWindow.setAlwaysOnTop(true, "screen-saver");
     mainWindow.setIgnoreMouseEvents(true, { forward: true });
     mainWindow.webContents.on("did-finish-load", () => {
@@ -113,6 +121,26 @@ app.on("ready", () => {
             mainWindow.webContents.send('scai');
         }
     });
+    // image storing logic -----------------------
+    globalShortcut.register("Control+Shift+V", async () => {
+        await (0, gpt4_js_1.sendImageToGPT4o)(exports.imageCache, mainWindow);
+        if (Array.isArray(exports.imageCache)) {
+            exports.imageCache.length = 0; // Clears the array without losing reference
+        }
+        else {
+            console.error("imageCache is not an array, cannot clear it.");
+        }
+    });
+    globalShortcut.register("Control+Shift+X", async () => {
+        const screenShot = await captureScreen();
+        if (!Array.isArray(exports.imageCache)) {
+            console.error("Error: imageCache is not an array");
+            return;
+        }
+        exports.imageCache.push(String(screenShot));
+        // console.log("image there", imageCache);
+    });
+    // image storing logic -----------------------
     globalShortcut.register("Control+Shift+R", () => {
         if (mainWindow) {
             mainWindow.webContents.send('rr');
