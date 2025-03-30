@@ -4,7 +4,6 @@ exports.startTranscription = startTranscription;
 const { spawn } = require("child_process");
 const express = require("express");
 const { live } = require("./deepgram.js");
-// const { BrowserWindow } = require("electron");
 function startTranscription(mainWindow) {
     const app2 = express();
     const PORT = 3001;

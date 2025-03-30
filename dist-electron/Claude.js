@@ -24,7 +24,7 @@ const anthropic = new Anthropic({
     apiKey: String(thisApi) // API key from environment variable
 });
 async function Claude(prompt) {
-    prompt = (prompt == null || '') ? "" : "answer the question in this prompt, give complete answer as i can ask only once " + prompt;
+    prompt = (prompt == null || '') ? "ignore" : "answer the question in this prompt, give complete answer as i can ask only once " + prompt;
     const content = [
         { type: "text", text: String(prompt) }
     ];

@@ -2,8 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import "./App.css";
 import Formate from "./formatting/Formate.tsx"
 import './index.css';
-// import { useNavigate } from "react-router-dom";
-// import {useHotkeys} from 'react-hotkeys-hook'
 let respIndex = 0;
 function App() {
   //@ts-ignore
@@ -12,12 +10,19 @@ function App() {
   const [response, setResponse] = useState<string | null>(null);
   const responseContainerRef = useRef<HTMLDivElement>(null);
   const [darkMode, setDarkMode] = useState<boolean>(true)
+  const [frozen, setFrozen] = useState<boolean>(false)
   const transRef = useRef<string|null>('');
+  const frozenRef = useRef<boolean>(false);
+useEffect(() => {
+  frozenRef.current = frozen;
+}, [frozen]);
+
   useEffect(() => {
     transRef.current = transcription
   }, [transcription])
   useEffect(() => {
-    // window.electron.scroll()
+    //@ts-ignore
+    window.electron.lock(() => freezeTranscription())
     //@ts-ignore
     window.electron.mode(() => setDarkMode((prev) => !prev))
     //@ts-ignore
@@ -28,8 +33,6 @@ function App() {
         setResponse(""); // Force a re-render
         setTimeout(() => setResponse(responses[respIndex]), 10); // Set actual response after a tiny delay
       }
-      // console.log(response)
-      // alert(responses)
     })
     //@ts-ignore    
     window.electron.onScrollDown(() => {
@@ -54,6 +57,11 @@ function App() {
       storeResponse(data)
     })
     //@ts-ignore
+    window.electron.gptw((data:any)=> {
+      setResponse(data)
+      storeResponse(data)
+    })
+    //@ts-ignore
     window.electron.sendSS(() => sendAdvanced());
     //@ts-ignore
     window.electron.vc(() => startListening())
@@ -64,14 +72,23 @@ function App() {
     //@ts-ignore
     window.electron.sendSSClaude(() => sendAdvancedC())
   }, [])
-
+  
+  function freezeTranscription() {
+    setFrozen((prev) => {
+      const newFrozen = !prev;
+      frozenRef.current = newFrozen; // Update ref
+      return newFrozen;
+    });
+  }
   async function startListening() {
     //@ts-ignore
     window.electron.startServer().then((response: string) => setText(response));
     //@ts-ignore
-    window.electron.transcription((data) =>
-      setTranscription((prevText) => (prevText ? prevText + " " + data.text : data.text))
-    );
+    window.electron.transcription((data) => {
+      if (!frozenRef.current) { // Use ref instead of state
+        setTranscription((prevText) => (prevText ? prevText + " " + data.text : data.text));
+      }
+    });    
   }
 
 function storeResponse(data:string){
@@ -152,12 +169,12 @@ async function sendAdvanced() {
   }
   return (
 <div className="flex p-4 min-w-screen h-screen ">
-  <div className="p-4 h-full w-[40%]  flex flex-col">
-    <div className={`p-8 font-semibold ${darkMode ? "text-white": "text-black"} w-full h-[45%] overflow-auto bg-opacity-40 ${darkMode ? "bg-black": "bg-white"} m-4`}>
+  <div className="pr-2 h-full w-[40%]  flex flex-col">
+    <div className={`p-2 font-semibold ${darkMode ? "text-white": "text-black"} w-full h-[45%] overflow-auto bg-opacity-40 ${darkMode ? "bg-black": "bg-white"} m-4`}>
       <div>
-      <div className="text-small font-bold">
+      <div className="text-small font-semibold">
         <div>ctrl + shift + Z: send images with no prompt deepseek reasoner</div>
-        <div>ctrl + shift + F: images with prompt claude answers with intution</div>
+        <div>ctrl + shift + F: image with prompt claude answers with intution</div>
         <div>ctrl + shift + A: only prompt using claude</div>
         <div>ctrl + shift + V: send images to gpt-4o</div>
         <div>ctrl + shift + D: reset images</div>
@@ -166,12 +183,12 @@ async function sendAdvanced() {
         <div>ctrl + shift + X: click screenshot</div>
         <div>ctrl + shift + Q: minimize</div>
         <div>ctrl + shift + R: reset transcription</div>
-        
+        <div>ctrl + shift + L: lock transcription</div>
       </div>
     </div>
     </div>
     <div className={`font-semibold ${darkMode ? "text-white" : "text-black "} p-4 w-full h-[55%] overflow-auto bg-opacity-40 ${darkMode ? "bg-black" : "bg-white"} m-4`}>
-      Transcription: {transcription}
+      Transcription: {frozen == false ? <span>active</span> : <span>locked</span>} {transcription}
     </div>
   </div>
   <div ref={responseContainerRef} className={`font-semibold h-full ${darkMode ? "text-white" : "text-black"} w-[60%] overflow-y-auto bg-opacity-40  m-4 ${darkMode ? "bg-black" : "bg-white"}`}>

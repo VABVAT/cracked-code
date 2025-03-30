@@ -12,6 +12,8 @@ const BASE = 'https://api.deepseek.com/chat/completions';
 
 
 async function generateCode(mainWindow:any, prompt: string, event:any){
+    const defaultPrompt = process.env.DEEPSEEK_DEFAULT;
+    prompt = (prompt == null || prompt.trim() == '') ? "" : prompt;
   try {
         console.log("Prompt:", prompt);
           const response = await axios.post(
@@ -20,7 +22,7 @@ async function generateCode(mainWindow:any, prompt: string, event:any){
                   model: 'deepseek-reasoner', // Specify the R1 model
                   messages: [
                       { role: 'system', content: 'You are a helpful assistant.' },
-                      { role: 'user', content: "Code this in C++, Give most optimized solution and also explain the intution " + prompt }
+                      { role: 'user', content:  String(defaultPrompt) + " " + prompt }
                   ],
                   stream: true,
                   temperature: 0

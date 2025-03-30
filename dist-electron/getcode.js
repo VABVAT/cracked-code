@@ -12,10 +12,12 @@ dotenv.config({
 const API_KEY = process.env.DEEPSEEK_API_KEY; // Change to DeepSeek API key
 const API_URL = "https://api.deepseek.com/v1/chat/completions"; // Adjust URL if needed
 async function getCode(prompt) {
+    const defaultPrompt = process.env.DEEPSEEK_DEFAULT;
+    prompt = (prompt == "") ? "ignore" : defaultPrompt + " " + prompt;
     try {
         const response = await axios.post(API_URL, {
             model: "deepseek-reasoner", // Use DeepSeek's model suited for coding
-            messages: [{ role: "user", content: prompt + " treat this as interview question, whenever you code use c++ if DSA question is asked" }],
+            messages: [{ role: "user", content: prompt }],
             temperature: 0.7,
         }, {
             headers: {

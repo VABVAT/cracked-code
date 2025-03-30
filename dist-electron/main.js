@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.imageCache = void 0;
-const gpt4_js_1 = require("./multi-image-models/gpt4.js");
-// import { generateCode } from "./advCode";
+const { sendImageToGPT4oWeb } = require("./multi-image-models/web.js");
+const { sendImageToGPT4o } = require("./multi-image-models/gpt4.js");
 const { advCode } = require("./advCode.js");
 const { getCode } = require("./getcode.js");
-const { app, BrowserWindow, ipcMain, globalShortcut, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
 const path = require("path");
 const { isDev } = require("./util.js");
 const { getPreloadPath } = require("./pathResolver.js");
@@ -15,12 +15,11 @@ const { captureScreen } = require("./screen-capture/captureScreen.js");
 const { machineIdSync } = require('node-machine-id');
 const { Claude } = require('./Claude.js');
 const { advClaude } = require('./claudeAdv.js');
-// const {sendToDeepSeek} = require('./multi-image-models/deepseekMulti.js')
 var exists = false;
 exports.imageCache = [];
+app.disableHardwareAcceleration();
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
-        // width: 1920,
         fullscreen: true,
         alwaysOnTop: true, // Keeps window on top
         fullscreenable: true, // Prevents it from going fullscreen
@@ -35,52 +34,24 @@ app.on("ready", () => {
             backgroundThrottling: false
         }
     });
-    // mainWindow.on('ready-to-show', () => {
-    //     const hwnd = mainWindow.getNativeWindowHandle();
-    //     user32.SetWindowDisplayAffinity(hwnd, 1); // Prevents screen capture
-    // });
+    mainWindow.setContentProtection(true);
     if (isDev()) {
         mainWindow.loadURL("http://localhost:3000");
     }
     else {
         mainWindow.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'));
     }
-    mainWindow.setContentProtection(true);
+    // mainWindow.setContentProtection(true)
+    mainWindow.setAlwaysOnTop(true, "screen-saver");
+    mainWindow.setIgnoreMouseEvents(true, { forward: true });
     // mainWindow.setOpacity(0); // Fully hidden
     mainWindow.webContents.on("devtools-opened", () => {
         mainWindow.webContents.closeDevTools();
     });
-    mainWindow.setAlwaysOnTop(true, "screen-saver");
-    mainWindow.setIgnoreMouseEvents(true, { forward: true });
     mainWindow.webContents.on("did-finish-load", () => {
         mainWindow.webContents.send("enable-scroll");
     });
-    mainWindow.on("close", (event) => {
-        const choice = dialog.showMessageBoxSync(mainWindow, {
-            type: "question",
-            buttons: ["Cancel", "Quit"],
-            defaultId: 0,
-            title: "Confirm Exit",
-            message: "Are you sure you want to quit?",
-        });
-        if (choice === 0) {
-            event.preventDefault(); // Stop closing if "Cancel" is clicked
-        }
-    });
-    app.on("before-quit", (event) => {
-        if (!mainWindow || mainWindow.isDestroyed())
-            return;
-        const choice = dialog.showMessageBoxSync(mainWindow, {
-            type: "question",
-            buttons: ["Cancel", "Quit"],
-            defaultId: 0,
-            title: "Confirm Exit",
-            message: "Are you sure you want to quit?",
-        });
-        if (choice === 0) {
-            event.preventDefault();
-        }
-    });
+    // hideFromScreenShare(mainWindow);
     exec('ffmpeg -version', (error) => {
         if (error) {
             exists = false;
@@ -115,6 +86,12 @@ app.on("ready", () => {
             mainWindow.webContents.send('start-server');
         }
     });
+    globalShortcut.register("Control+Shift+L", () => {
+        console.log("lock");
+        if (mainWindow) {
+            mainWindow.webContents.send('lock');
+        }
+    });
     globalShortcut.register("Control+Shift+I", () => {
         if (mainWindow) {
             mainWindow.webContents.send('sai');
@@ -125,12 +102,18 @@ app.on("ready", () => {
             mainWindow.webContents.send('scai');
         }
     });
-    globalShortcut.register("Control+Shift+W", () => {
-        // sendToDeepSeek(mainWindow, )
-    });
     // image storing logic -----------------------
     globalShortcut.register("Control+Shift+V", async () => {
-        await (0, gpt4_js_1.sendImageToGPT4o)(exports.imageCache, mainWindow);
+        await sendImageToGPT4o(exports.imageCache, mainWindow);
+        if (Array.isArray(exports.imageCache)) {
+            exports.imageCache.length = 0; // Clears the array without losing reference
+        }
+        else {
+            console.error("imageCache is not an array, cannot clear it.");
+        }
+    });
+    globalShortcut.register("Control+Shift+W", async () => {
+        await sendImageToGPT4oWeb(exports.imageCache, mainWindow);
         if (Array.isArray(exports.imageCache)) {
             exports.imageCache.length = 0; // Clears the array without losing reference
         }
@@ -159,7 +142,10 @@ app.on("ready", () => {
                 mainWindow.hide(); // Hide instead of minimize
             }
             else {
+                // mainWindow.setContentProtection(true); 
+                // setTimeout(() => {}, 200)
                 mainWindow.showInactive(); // Show without taking focus
+                mainWindow.setContentProtection(true);
             }
         }
     });

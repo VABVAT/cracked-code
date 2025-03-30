@@ -12,13 +12,15 @@ const axios = require("axios");
 const API_URL = process.env.DEEPSEEK_API_KEY;
 const BASE = 'https://api.deepseek.com/chat/completions';
 async function generateCode(mainWindow, prompt, event) {
+    const defaultPrompt = process.env.DEEPSEEK_DEFAULT;
+    prompt = (prompt == null || prompt.trim() == '') ? "" : prompt;
     try {
         console.log("Prompt:", prompt);
         const response = await axios.post(BASE, {
             model: 'deepseek-reasoner', // Specify the R1 model
             messages: [
                 { role: 'system', content: 'You are a helpful assistant.' },
-                { role: 'user', content: "Code this in C++, Give most optimized solution and also explain the intution " + prompt }
+                { role: 'user', content: String(defaultPrompt) + " " + prompt }
             ],
             stream: true,
             temperature: 0
@@ -71,7 +73,7 @@ const genAI = new GoogleGenerativeAI(API_KEY?.toString());
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 async function advCode(mainWindow, event, prompt, imageCache) {
     try {
-        prompt = "Extract and explain the questions from these images so they can be fed to another AI.";
+        prompt = "make seperate list of batsman and bowler in the following image";
         // console.log(prompt)
         const imageParts = imageCache.map((base64) => ({
             inlineData: {
@@ -82,7 +84,7 @@ async function advCode(mainWindow, event, prompt, imageCache) {
         const result = await model.generateContent([prompt, ...imageParts]);
         const rr = result.response.text();
         console.log(rr);
-        generateCode(mainWindow, rr, event);
+        // generateCode(mainWindow, rr, event)
     }
     catch (error) {
         console.error("Error in advCode:", error);

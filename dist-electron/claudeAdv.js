@@ -30,15 +30,19 @@ async function advClaude(prompt, imageCache, mimeType = "image/png") {
     let apiKey = getNextApiKey();
     if (!apiKey)
         return null; // Stop if no API key is available
+    const defaultprompt = process.env.IMAGE_DEFAULT_PROMPT;
     // Default prompt setup
     prompt = (prompt == null || prompt == '')
-        ? "Answer the question in the images. If it's not a coding question, provide the answer. If it is a coding question, give the intuition, steps, and solution in C++."
-        : `This is a conversation from a live interview, and you are my helper: ${prompt}. Provide a complete answer. If a coding problem is present, write the solution in C++ along with intuition and explanation.`;
+        ? String(defaultprompt)
+        : `This is a conversation from a live interview, and you are my helper: ${prompt}. Provide a complete answer.If it is not a coding question then provide the answer else If it is a coding problem, write the solution in C++ along with intuition and explanation.`;
     const anthropic = new Anthropic({ apiKey });
     try {
         // ✅ Prepare image content array (supports multiple images)
         console.log("Prompt:", prompt);
         const content = [{ type: "text", text: prompt }]; // Claude requires structured content
+        if (imageCache.length === 0) {
+            return "no images found";
+        }
         // ✅ Append all images from imageCache[]
         imageCache.forEach(base64Image => {
             content.push({

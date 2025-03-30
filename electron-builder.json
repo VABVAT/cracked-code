@@ -9,8 +9,7 @@
     "extraResources": [
         "dist-electron/preload.cjs",
         "dist-electron/.env"
-    ],
-        
+    ],   
     "mac" : {
         "target": "dmg"
     },

@@ -38,5 +38,7 @@ electron.contextBridge.exposeInMainWorld("electron", {
         ipcRenderer.on("stream-error", (_, errorMessage) => onError(errorMessage));
         ipcRenderer.send("send-advanced-request", prompt);
     },
-    gpt: (callback) => ipcRenderer.on('response-gpt-4o', (_, data) => callback(data))
+    gpt: (callback) => ipcRenderer.on('response-gpt-4o', (_, data) => callback(data)),
+    lock: (callback) => ipcRenderer.on('lock', (_) => callback()),
+    gptw: (callback) => ipcRenderer.on('response-gpt-4o-web', (_, data) => callback(data)),
 });
