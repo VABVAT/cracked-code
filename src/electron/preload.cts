@@ -42,6 +42,6 @@ electron.contextBridge.exposeInMainWorld("electron",{
     gpt: (callback:(data:any) => void) => ipcRenderer.on('response-gpt-4o', (_:Event, data:any) => callback(data)),
     lock: (callback:() => void) => ipcRenderer.on('lock', (_:Event) => callback()),
     gptw: (callback:(data:any) => void) => ipcRenderer.on('response-gpt-4o-web', (_:Event, data:any) => callback(data)),
-
+    hideOr: (callback:() => void) => ipcRenderer.on('hide-or-show', (_:Event) => callback())
 
 })

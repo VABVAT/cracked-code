@@ -73,7 +73,7 @@ const genAI = new GoogleGenerativeAI(API_KEY?.toString());
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 async function advCode(mainWindow, event, prompt, imageCache) {
     try {
-        prompt = "make seperate list of batsman and bowler in the following image";
+        prompt = "Extract and explain the questions from these images so they can be fed to another AI.";
         // console.log(prompt)
         const imageParts = imageCache.map((base64) => ({
             inlineData: {
@@ -84,7 +84,7 @@ async function advCode(mainWindow, event, prompt, imageCache) {
         const result = await model.generateContent([prompt, ...imageParts]);
         const rr = result.response.text();
         console.log(rr);
-        // generateCode(mainWindow, rr, event)
+        generateCode(mainWindow, rr, event);
     }
     catch (error) {
         console.error("Error in advCode:", error);

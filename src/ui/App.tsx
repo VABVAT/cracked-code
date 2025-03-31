@@ -13,6 +13,7 @@ function App() {
   const [frozen, setFrozen] = useState<boolean>(false)
   const transRef = useRef<string|null>('');
   const frozenRef = useRef<boolean>(false);
+  const [hide, setHide] = useState<boolean>(false);
 useEffect(() => {
   frozenRef.current = frozen;
 }, [frozen]);
@@ -71,6 +72,8 @@ useEffect(() => {
     window.electron.scai(() => sendToAiC())
     //@ts-ignore
     window.electron.sendSSClaude(() => sendAdvancedC())
+    //@ts-ignore
+    window.electron.hideOr(() => setHide((prev) => !prev))
   }, [])
   
   function freezeTranscription() {
@@ -170,13 +173,14 @@ async function sendAdvanced() {
   return (
 <div className="flex p-4 min-w-screen h-screen ">
   <div className="pr-2 h-full w-[40%]  flex flex-col">
-    <div className={`p-2 font-semibold ${darkMode ? "text-white": "text-black"} w-full h-[45%] overflow-auto bg-opacity-40 ${darkMode ? "bg-black": "bg-white"} m-4`}>
+    <div className={`p-2 font-semibold ${darkMode ? "text-white": "text-black"} w-full h-[45%] overflow-auto ${hide ? "bg-opacity-0 text-opacity-0" : "bg-opacity-40 text-opacity-100"} ${darkMode ? "bg-black": "bg-white"} m-4`}>
       <div>
       <div className="text-small font-semibold">
         <div>ctrl + shift + Z: send images with no prompt deepseek reasoner</div>
         <div>ctrl + shift + F: image with prompt claude answers with intution</div>
-        <div>ctrl + shift + A: only prompt using claude</div>
+        <div>ctrl + shift + A: only prompt - chat gpt</div>
         <div>ctrl + shift + V: send images to gpt-4o</div>
+        <div>ctrl + shift + W: search web for answer</div>
         <div>ctrl + shift + D: reset images</div>
         <div>ctrl + shift + I: only prompt to deepseek reasoner</div>
         <div>ctrl + shift + C: previous answer</div>
@@ -187,20 +191,19 @@ async function sendAdvanced() {
       </div>
     </div>
     </div>
-    <div className={`font-semibold ${darkMode ? "text-white" : "text-black "} p-4 w-full h-[55%] overflow-auto bg-opacity-40 ${darkMode ? "bg-black" : "bg-white"} m-4`}>
+    <div className={`font-semibold ${hide ? "bg-opacity-0 text-opacity-0" : "bg-opacity-40 text-opacity-100"} ${darkMode ? "text-white" : "text-black "} p-4 w-full h-[55%] overflow-auto  ${darkMode ? "bg-black" : "bg-white"} m-4`}>
       Transcription: {frozen == false ? <span>active</span> : <span>locked</span>} {transcription}
     </div>
   </div>
-  <div ref={responseContainerRef} className={`font-semibold h-full ${darkMode ? "text-white" : "text-black"} w-[60%] overflow-y-auto bg-opacity-40  m-4 ${darkMode ? "bg-black" : "bg-white"}`}>
+<div ref={responseContainerRef} className={`font-semibold h-full ${darkMode ? "text-white" : "text-black"} ${hide ? "bg-opacity-0 text-opacity-0" : "bg-opacity-40 text-opacity-100"} w-[60%] overflow-y-auto   m-4 ${darkMode ? "bg-black" : "bg-white"}`}>
         {response ? (
           <div className="w-full h-full p-4">
-           {<Formate text={response} />}
+           {<Formate hd={hide} text={response} />}
           </div>
         ) : null}
       </div>
 </div>
-
-  );
+);
 }
 
 export default App;

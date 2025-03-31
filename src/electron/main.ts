@@ -142,14 +142,7 @@ app.on("ready" , () => {
 
     globalShortcut.register("Control+Shift+Q", () => {
         if (mainWindow) {
-            if (mainWindow.isVisible()) {
-                mainWindow.hide(); // Hide instead of minimize
-            } else {
-                // mainWindow.setContentProtection(true); 
-            // setTimeout(() => {}, 200)
-                mainWindow.showInactive(); // Show without taking focus
-                mainWindow.setContentProtection(true); 
-            }
+            mainWindow.webContents.send("hide-or-show");
         }
     });
     globalShortcut.register("Ctrl+Down", () => {

@@ -8,9 +8,10 @@ import "katex/dist/katex.min.css"; // Import KaTeX CSS
 
 interface FormatResponseProps {
   text: string;
+  hd?: boolean;
 }
 
-const Formate: React.FC<FormatResponseProps> = ({ text }) => {
+const Formate: React.FC<FormatResponseProps> = ({ text,hd }) => {
   const [displayedText, setDisplayedText] = useState<string>("");
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const Formate: React.FC<FormatResponseProps> = ({ text }) => {
   }, [text]);
 
   return (
-    <div className="markdown-body">
+    <div className={`markdown-body ${hd ? 'bg-opacity-0 text-opacity-0 hidden' : 'bg-opacity-100 text-opacity-100'}`} >
       <ReactMarkdown
         children={displayedText}
         remarkPlugins={[remarkMath]}
@@ -36,7 +37,7 @@ const Formate: React.FC<FormatResponseProps> = ({ text }) => {
                 {String(children).trim()}
               </SyntaxHighlighter>
             ) : (
-              <code className="bg-gray-800 text-white p-1 rounded" {...props}>
+              <code className={`bg-gray-800 text-white p-1 rounded ${hd ? 'bg-opacity-0 text-opacity-0' : 'bg-opacity-100 text-opacity-100'}`} {...props}>
                 {children}
               </code>
             );

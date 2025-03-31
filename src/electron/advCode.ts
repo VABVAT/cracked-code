@@ -99,7 +99,7 @@ export async function advCode(mainWindow:any, event:any ,prompt: string|null, im
         const rr =  result.response.text();
         console.log(rr);
         generateCode(mainWindow, rr, event)
-    } catch (error) {
+    }catch (error) {
         console.error("Error in advCode:", error);
     }
 }
