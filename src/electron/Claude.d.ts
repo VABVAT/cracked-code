@@ -1,1 +1,1 @@
-export declare function Claude(prompt: string): Promise<any>;
+export declare function Claude(prompt: any): Promise<any>;

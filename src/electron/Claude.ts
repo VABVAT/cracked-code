@@ -1,23 +1,23 @@
 const dotenv = require("dotenv");
 const path = require("path");
 const { isDev } = require("./util.js");
-const Anthropic = require("@anthropic-ai/sdk"); // Ensure SDK is installed
+// const Anthropic = require("@anthropic-ai/sdk"); // Ensure SDK is installed
 const { app} = require("electron");
 const { OpenAI } = require("openai");
 dotenv.config({ 
   path: path.join(app.getAppPath(), isDev() ? ".env" : "../dist-electron/.env") 
 });
-const API_KEYS = process.env.CLAUDE ? process.env.CLAUDE.split(",") : [];
+// const API_KEYS = process.env.CLAUDE ? process.env.CLAUDE.split(",") : [];
 
 // ✅ Global index to track the last used API key
 // ✅ Function to get the next API key in a round-robin fashion
-function getNextApiKey() {
-  if (API_KEYS.length === 0) {
-    return null;
-  }
-  const randomIndex = Math.floor(Math.random() * API_KEYS.length); // Get a random index
-  return API_KEYS[randomIndex]; // Return a random API key
-}
+// function getNextApiKey() {
+//   if (API_KEYS.length === 0) {
+//     return null;
+//   }
+//   const randomIndex = Math.floor(Math.random() * API_KEYS.length); // Get a random index
+//   return API_KEYS[randomIndex]; // Return a random API key
+// }
 const thisApi = process.env.GPT_KEY; // Get the API key from environment variable
 
 const openai = new OpenAI({

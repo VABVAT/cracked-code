@@ -175,16 +175,16 @@ async function sendAdvanced() {
   <div className="pr-2 h-full w-[40%]  flex flex-col">
     <div className={`p-2 font-semibold ${darkMode ? "text-white": "text-black"} w-full h-[45%] overflow-auto ${hide ? "bg-opacity-0 text-opacity-0" : "bg-opacity-40 text-opacity-100"} ${darkMode ? "bg-black": "bg-white"} m-4`}>
       <div>
-      <div className="text-small font-semibold">
+      <div className="text-sm">
+        <div>ctrl + shift + X: click screenshot (Undetected)</div>
+        <div>ctrl + shift + D: reset images</div>
         <div>ctrl + shift + Z: send images with no prompt deepseek reasoner</div>
         <div>ctrl + shift + F: image with prompt claude answers with intution</div>
         <div>ctrl + shift + A: only prompt - chat gpt</div>
         <div>ctrl + shift + V: send images to gpt-4o</div>
         <div>ctrl + shift + W: search web for answer</div>
-        <div>ctrl + shift + D: reset images</div>
         <div>ctrl + shift + I: only prompt to deepseek reasoner</div>
         <div>ctrl + shift + C: previous answer</div>
-        <div>ctrl + shift + X: click screenshot</div>
         <div>ctrl + shift + Q: minimize</div>
         <div>ctrl + shift + R: reset transcription</div>
         <div>ctrl + shift + L: lock transcription</div>
