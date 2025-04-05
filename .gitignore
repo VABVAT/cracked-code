@@ -16,6 +16,14 @@ dist-types
 # dist-react
 *.local
 /dist-electron/.env
+dist-electron
+/dist-electron
+dist-react
+/dist-react
+dist
+/dist
+build
+/build
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
