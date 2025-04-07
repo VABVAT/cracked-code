@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.imageCache = void 0;
+const { superReason } = require("./superreason");
 const { sendImageToGPT4oWeb } = require("./multi-image-models/web.js");
 const { sendImageToGPT4o } = require("./multi-image-models/gpt4.js");
 const { advCode } = require("./advCode.js");
@@ -96,6 +97,9 @@ app.on("ready", () => {
         if (mainWindow) {
             mainWindow.webContents.send('sai');
         }
+    });
+    globalShortcut.register("Control+Shift+O", async () => {
+        await superReason(mainWindow, exports.imageCache);
     });
     globalShortcut.register("Control+Shift+A", () => {
         if (mainWindow) {

@@ -65,6 +65,11 @@ useEffect(() => {
     //@ts-ignore
     window.electron.sendSS(() => sendAdvanced());
     //@ts-ignore
+    window.electron.super((data:any)=> {
+      setResponse(data)
+      storeResponse(data)
+    })
+    //@ts-ignore
     window.electron.vc(() => startListening())
     //@ts-ignore
     window.electron.sai(() =>sendToAi())
