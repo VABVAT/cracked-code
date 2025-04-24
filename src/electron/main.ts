@@ -23,14 +23,14 @@ app.disableHardwareAcceleration();
 app.on("ready" , () => {
     const mainWindow = new BrowserWindow({
         fullscreen:true,
-        alwaysOnTop: true, // Keeps window on top
-        fullscreenable: true, // Prevents it from going fullscreen
-        resizable: false, // Prevents accidental resizing
-        skipTaskbar: true, // Keeps it in taskbar
+        alwaysOnTop: true, 
+        fullscreenable: true, 
+        resizable: false, 
+        skipTaskbar: true, 
         focusable: false,
         transparent: true,
         frame: false,
-        hasShadow:false, // Allows user interaction
+        hasShadow:false, 
         webPreferences: {
             preload: getPreloadPath(),
             backgroundThrottling: false

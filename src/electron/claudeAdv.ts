@@ -21,7 +21,6 @@ function getNextApiKey() {
 }
 
 /**
- * ✅ Accepts a text prompt + multiple images (Base64).
  * @param {string | null} prompt - The text prompt (default prompt if null).
  * @param {string[]} imageCache - Array of Base64-encoded image data.
  * @param {string} [mimeType="image/png"] - The image MIME type (default: PNG).
@@ -34,7 +33,7 @@ export async function advClaude(prompt: string | null, imageCache: string[], mim
   // Default prompt setup
   prompt = (prompt == null || prompt == '') 
     ? String(defaultprompt)
-    : `This is a conversation from a live interview, and you are my helper: ${prompt}. Provide a complete answer.If it is not a coding question then provide the answer else If it is a coding problem, write the solution in C++ along with intuition and explanation.`;
+    : `This is a conversation from a live interview, and you are my helper: ${prompt}. give a complete answer as I can ask only once, If it is a coding question then Answer in C++, else just give the general answer to this.`;
   const anthropic = new Anthropic({ apiKey });
 
   try {

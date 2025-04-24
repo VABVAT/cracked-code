@@ -1,54 +1,75 @@
-# React + TypeScript + Vite
+# Project Setup Guide
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Prerequisites
 
-Currently, two official plugins are available:
+### ONLY FOR WINDOWS
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+#### FFmpeg Installation (Required for Audio Transcription)
 
-## Expanding the ESLint configuration
+1. Open PowerShell or Command Prompt as administrator
+2. Install FFmpeg using Windows Package Manager:
+   ```
+   winget install ffmpeg
+   ```
+3. Verify the installation by checking the version:
+   ```
+   ffmpeg --version
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+#### Audio Transcription Setup
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+For proper audio transcription functionality, ensure your default recording device is set to "Stereo Mix":
+
+1. Go to Sound Settings
+2. Navigate to "More Sound Settings"
+3. Select the "Recording" tab
+4. Set "Stereo Mix" as the default device
+5. Enable the "Listen" checkbox for Stereo Mix
+
+## Installation
+
+### Important Note About Electron Version
+
+This application requires a specific version of Electron:
+
+```
+npm install electron@35.0.0 --save-dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+Check your Electron version with:
 ```
+npm list electron
+```
+
+Using this particular version is necessary for certain hidden functionality in the application.
+
+## Running in Production Mode
+
+1. Start the React development server:
+   ```
+   npm run dev:react
+   ```
+
+2. In another terminal window, build the Electron app:
+   ```
+   npm run build:electron
+   ```
+
+3. Run the Electron application:
+   ```
+   npm run dev:electron
+   ```
+
+## Building the Application
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+
+2. Build the Electron application for Windows:
+   ```
+   npm run dist:win
+   ```
+
+This will create the distributable Windows application.

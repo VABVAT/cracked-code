@@ -34,7 +34,7 @@ async function advClaude(prompt, imageCache, mimeType = "image/png") {
     // Default prompt setup
     prompt = (prompt == null || prompt == '')
         ? String(defaultprompt)
-        : `This is a conversation from a live interview, and you are my helper: ${prompt}. Provide a complete answer.If it is not a coding question then provide the answer else If it is a coding problem, write the solution in C++ along with intuition and explanation.`;
+        : `This is a conversation from a live interview, and you are my helper: ${prompt}. give a complete answer as I can ask only once, try using python if it is coding question, if required then use following libraries [pygame, opencv, Pydantic, requests module, random,face_recognation, speech_recognition, os module, pyttsx3, gemini api, DeepAI].`;
     const anthropic = new Anthropic({ apiKey });
     try {
         // ✅ Prepare image content array (supports multiple images)

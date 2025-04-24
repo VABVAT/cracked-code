@@ -25,11 +25,11 @@ const openai = new OpenAI({
     apiKey: String(thisApi), // API key from environment variable
 });
 async function Claude(prompt) {
-    prompt = prompt ? `Answer the question in this prompt, give a complete answer as I can ask only once, if it is a coding question then code in C++, with inution and approach: ${prompt}` : "Ignore";
+    prompt = prompt ? `Answer the question in this prompt, give a complete answer as I can ask only once, try using python if it is coding question, if required then use following libraries [pygame, opencv, Pydantic, requests module, random,face_recognation, speech_recognition, os module, pyttsx3, gemini api, DeepAI] ${prompt}` : "Ignore";
     try {
         const response = await openai.chat.completions.create({
             model: "gpt-4o", // Use the desired OpenAI model
-            max_tokens: 2500,
+            max_tokens: 3500,
             messages: [{ role: "user", content: prompt }],
         });
         return response.choices[0].message.content;

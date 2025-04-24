@@ -6,9 +6,6 @@ const path = require("path");
 const { isDev } = require("./util.js");
 dotenv.config({path: path.join(app.getAppPath(), isDev() ? '.env' : '../dist-electron/.env', )})
 const API_KEY = process.env.GEMINI_API_KEY
-const axios = require("axios");
-const API_URL = process.env.GPT_KEY
-const BASE = 'https://api.openai.com/v1/chat/completions';
 const OpenAI = require("openai");
 
 const openai = new OpenAI({
@@ -45,49 +42,9 @@ async function generateCode(mainWindow:any, prompt: string){
             },
         );
         mainWindow.webContents.send("superresponse", rrr.choices[0].message.content);
-        console.log("Response:", rrr.choices[0].message.content);
-        //   console.log(response.choices[0].message.content);
-        
-        //   let buffer = ""; // Store accumulated data
-
-        //   response.data.on("data", (chunk: Buffer) => {
-        //       try {
-        //           buffer += chunk.toString(); // Append the new chunk
-          
-        //           // Split multiple events if received
-        //           const jsonMessages = buffer.split("\n").filter((line) => line.startsWith("data: "));
-          
-        //           for (const message of jsonMessages) {
-        //               const jsonStr = message.replace("data: ", "").trim();
-        //               if (!jsonStr || jsonStr === "[DONE]") continue;
-          
-        //               const chunkJSON = JSON.parse(jsonStr);
-        //                 // console.log(chunkJSON.choices?.[0]?.delta)
-        //               const content = chunkJSON.choices?.[0]?.delta?.reasoning_content 
-        //                   ?? chunkJSON.choices?.[0]?.delta?.content 
-        //                   ?? "";
-        //               console.log(content)
-        //               mainWindow.webContents.send("stream-response", content);
-        //           }
-          
-        //           buffer = ""; // Reset after processing
-        //       } catch (error) {
-        //           console.error("Error processing stream chunk:", error);
-        //       }
-        //   });
-          
-        // response.data.on("end", () => {
-        //     console.log("Streaming ended");
-        //     mainWindow.webContents.send("stream-end"); // ✅ Notify renderer when done
-        // });
-
-        // response.data.on("error", (err: any) => {
-        //     console.error("Streaming error:", err);
-        //     event.sender.send("stream-error", err.message);
-        // });   
+        console.log("Response:", rrr.choices[0].message.content);  
         } catch (error:any) {
-            // console.error("Error calling DeepSeek API:", error.response ? error.response.data : error.message);
-            // event.sender.send("stream-error", "Error in API call")
+            mainWindow.webContents.send("superresponse", "ERROR");
     }  
 }
 

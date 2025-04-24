@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useHotkeys } from "react-hotkeys-hook"
 
 export default function Welcome(){
-
+    // NOT USED
 
     const [respo, setResponse] = useState<string | null>()
     const keyVal = useRef<HTMLInputElement | null>(null)
