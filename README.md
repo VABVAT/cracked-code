@@ -88,3 +88,8 @@ Using this particular version is necessary for certain hidden functionality in t
 3. In the dist folder the app will be created
 
 This will create the distributable Windows application.
+
+## DONATE
+1. You can donate via UPI - vaibhavsidana09@okhdfcbank
+
+2. Paypal - https://www.paypal.me/VaibhavSidana
