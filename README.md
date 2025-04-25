@@ -4,6 +4,12 @@
 
 ### ONLY FOR WINDOWS
 
+### Run the app as adminstrator, other anti-viruses except windows defender might flag this so you can try disabling them
+
+### Make sure ports 3001 and 3000 are empty
+
+### only way to quit the app is through task manager
+
 #### FFmpeg Installation (Required for Audio Transcription)
 
 1. Open PowerShell or Command Prompt as administrator
@@ -44,18 +50,26 @@ npm list electron
 Using this particular version is necessary for certain hidden functionality in the application.
 
 ## Running in Production Mode
+1. Install Dependencies
+   ```
 
-1. Start the React development server:
+   npm install
+   ```
+2. Start the React development server:
    ```
    npm run dev:react
    ```
 
-2. In another terminal window, build the Electron app:
+3. In another terminal window, build the Electron app:
    ```
    npm run build:electron
    ```
+4. Make sure you copy the correct .env file format
+   ```
 
-3. Run the Electron application:
+   .env must be presesnt in dist-electron and in root directory of project
+   ```
+5. Run the Electron application:
    ```
    npm run dev:electron
    ```
@@ -71,5 +85,6 @@ Using this particular version is necessary for certain hidden functionality in t
    ```
    npm run dist:win
    ```
+3. In the dist folder the app will be created
 
 This will create the distributable Windows application.

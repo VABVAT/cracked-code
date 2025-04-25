@@ -10,9 +10,6 @@ const { isDev } = require("./util.js");
 // const { BrowserWindow } = require("electron");
 // Ensure environment variables are loaded
 dotenv.config({ path: path.join(app.getAppPath(), isDev() ? '.env' : '../dist-electron/.env') });
-// dotenv.config({path: isDev() ? app.getAppPath() : path.join(__dirname, '..', '/dist-electron/.env')})
-// console.log(process.env)
-// Your local audio stream
 const url = "http://localhost:3001/audio";
 const live = async (mainWindow) => {
     const deepgram = createClient(process.env.DEEPGRAM_API_KEY);
