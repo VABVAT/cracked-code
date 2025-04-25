@@ -93,3 +93,8 @@ This will create the distributable Windows application.
 1. You can donate via UPI - vaibhavsidana09@okhdfcbank
 
 2. Paypal - https://www.paypal.me/VaibhavSidana
+
+## PS
+1. Code quality is poor and type-safety is not imposed. You are free to help.
+2. Many edge cases are not configured properly, you are free to help there as well. 
+3. Usage can be tough for first-time user, I will upload usage docs and videos in the future
